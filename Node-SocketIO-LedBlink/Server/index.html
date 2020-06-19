@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+</head>
+
+<body>
+    <h1>LED control</h1>
+    <button id='bt1'>ON</button>
+    <button id='bt2'>OFF</button>
+    <h3>Led status</h3>
+    <p id="ledStatus">Led status listen</p>
+    <h3>Temp value</h3>
+    <p id="temp">Temp listen</p>
+    <script>
+        var socket = io();
+        $(document).ready(function () {
+            $("#bt1").click(function () {
+                $("p").empty();
+                // $("p").append('ON')
+                socket.emit('led on','on')
+            });
+            $("#bt2").click(function () {
+                $("p").empty();
+                // $("p").append('OFF')
+                socket.emit('led off','off')
+            });
+            socket.on('ledStatus2web',(msg)=>{
+                $('#ledStatus').empty();
+                $('#ledStatus').append(msg);
+            })
+            socket.on('temp2web',(msg)=>{
+                $('#temp').empty();
+                $('#temp').append(msg);
+            })
+        });
+    </script>
+</body>
+
+</html>
