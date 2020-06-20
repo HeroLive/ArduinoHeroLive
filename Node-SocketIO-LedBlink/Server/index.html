@@ -7,38 +7,151 @@
     <title>Document</title>
     <script src="/socket.io/socket.io.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <style>
+        .block {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-around;
+            border: 1px solid grey;
+            border-radius: 10px;
+            padding: 15px;
+            width: 320px;
+            margin-top: 20px;
+        }
 
+        .temp {
+            flex-direction: row;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            width: 160px;
+            margin-left: 10px;
+        }
+
+        .tempVal {
+            flex-direction: row;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 90px;
+            color: cornflowerblue;
+            font-weight: 500;
+        }
+
+        .tempUnit {
+            flex-direction: row;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            color: rgb(139, 175, 241);
+        }
+
+        .tempO {
+            color: rgb(139, 175, 241);
+            font-size: 15px;
+            margin: 2px;
+        }
+
+        .button {
+            display: flex;
+            flex-direction: row;
+            background-color: #e7e7e7;
+            border: none;
+            color: rgb(158, 155, 155);
+            align-items: center;
+            justify-content: center;
+            font-size: 25px;
+            font-weight: bold;
+            border-radius: 10px;
+            width: 100px;
+            height: 60px;
+            cursor: pointer;
+        }
+        .button:focus{
+            outline: none;
+        }
+
+        /* Green */
+        .button1 {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        /* red */
+        .button2 {
+            background-color: #f44336;
+            color: white;
+        }
+
+        /* Yellow */
+        .button3 {
+            background-color: #ffe605;
+            color: white;
+        }
+    </style>
 </head>
 
 <body>
-    <h1>LED control</h1>
-    <button id='bt1'>ON</button>
-    <button id='bt2'>OFF</button>
-    <h3>Led status</h3>
-    <p id="ledStatus">Led status listen</p>
-    <h3>Temp value</h3>
-    <p id="temp">Temp listen</p>
+    <h1>SMART HOME V1.0</h1>
+    <div class="block">
+        <button id="bt1" class="button">LED 1</button>
+        <button id="bt2" class="button">LED 2</button>
+        <button id="bt3" class="button">LED 3</button>
+    </div>
+    <div class="block">
+        <div class="temp">
+            <div class='tempVal' id="tempC"></div>
+            <div class='tempO'>o</div>
+            <div class='tempUnit'>C</div>
+        </div>
+        <div class="temp">
+            <div class='tempVal' id='tempF'></div>
+            <div class="tempO">o</div>
+            <div class='tempUnit'>F</div>
+        </div>
+    </div>
+
     <script>
+        var led = { led1: 0, led2: 0, led3: 0 }
+        var temp = 0;
         var socket = io();
+        socket.on('ledStatus2Web', (msg) => {
+            led = msg;
+            console.log(led);
+            if (led.led1 === true) {
+                $("#bt1").addClass('button1');
+            } else $("#bt1").removeClass('button1');
+            if (led.led2 === true) {
+                $("#bt2").addClass('button2');
+            } else $("#bt2").removeClass('button2');
+            if (led.led3 === true) {
+                $("#bt3").addClass('button3');
+            } else $("#bt3").removeClass('button3');
+        })
+        socket.on('temp2web', (msg) => {
+            $('#tempC').text(msg.tempC);
+            $('#tempF').text(msg.tempF);
+        })
+
         $(document).ready(function () {
             $("#bt1").click(function () {
-                $("p").empty();
-                // $("p").append('ON')
-                socket.emit('led on','on')
+                // $("#bt1").toggleClass('button1');
+                led.led1 = !led.led1;
+                socket.emit('led', led)
             });
             $("#bt2").click(function () {
-                $("p").empty();
-                // $("p").append('OFF')
-                socket.emit('led off','off')
+                // $("#bt2").toggleClass('button2');
+                led.led2 = !led.led2;
+                socket.emit('led', led)
             });
-            socket.on('ledStatus2web',(msg)=>{
-                $('#ledStatus').empty();
-                $('#ledStatus').append(msg);
-            })
-            socket.on('temp2web',(msg)=>{
-                $('#temp').empty();
-                $('#temp').append(msg);
-            })
+            $("#bt3").click(function () {
+                // $("#bt3").toggleClass('button3');
+                led.led3 = !led.led3;
+                socket.emit('led', led)
+            });
+
         });
     </script>
 </body>

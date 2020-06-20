@@ -11,20 +11,19 @@ app.get("/", (req, res) => {
 
 io.on("connection", (socket) => {
   console.log("a user connected, id: ", socket.id);
+  io.emit("getLedStatus","");
+  io.emit("getTempInit","");
   socket.on("disconnect", () => {
     console.log("user ", socket.id, " disconnected");
   });
-  socket.on("led on", (msg) => {
-    console.log("Led status to j5: ", msg);
-    io.emit("led on", msg);
+  socket.on("led", (msg) => {
+    console.log("Led status from web: ", msg);
+    io.emit("led", msg);
   });
-  socket.on("led off", (msg) => {
-    console.log("Led status to j5: ", msg);
-    io.emit("led off", msg);
-  });
+
   socket.on("ledStatus", (msg) => {
-    console.log("Led status from j5: ", msg);
-    io.emit("ledStatus2web", msg);
+    console.log("Led status from J5: ", msg);
+    io.emit("ledStatus2Web", msg);
   });
 
   socket.on("temp", (msg) => {
