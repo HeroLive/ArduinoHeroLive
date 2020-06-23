@@ -5,12 +5,32 @@ var buzz = null;
 var D9 = null;
 var D10 = null;
 var D11 = null;
-var led = { led1: 0, led2: 0, led3: 0 };
-var temp = { tempC:'', tempF: '', tempK: '' }
+var ledInit = { led1: null, led2: null, led3: null };
+var tempNull = { tempC: "", tempF: "", tempK: "" };
+var led = ledInit;
+var temp = tempNull;
+var tempSetting = { freq: 1 };
+var freqSender = 1;
 
-var url = "http://192.168.1.4:3484";
-// url = "https://j5led.herokuapp.com";
+var url = "http://192.168.1.10:3484/station01";
+// var  url = "https://j5led.herokuapp.com/station01";
 var io = require("socket.io-client")(url);
+
+board.on("exit", function (event) {
+  console.log("exit", event);
+  D9.off();
+  D10.off();
+  D11.off();
+});
+
+board.on("close", function (event) {
+  console.log("close");
+  process.exit();
+});
+
+board.on("connect", function (event) {
+  console.log("connect", event);
+});
 
 board.on("ready", function () {
   buzz = new five.Led(8);
@@ -21,7 +41,7 @@ board.on("ready", function () {
   var thermometer = new five.Thermometer({
     controller: "LM35",
     pin: "A0",
-    freq: 1000
+    freq: 1000,
   });
 
   thermometer.on("data", () => {
@@ -34,9 +54,19 @@ board.on("ready", function () {
     // console.log("fahrenheit: %d", fahrenheit);
     // console.log("kelvin: %d", kelvin);
     // console.log("--------------------------------------");
-    io.emit("temp", temp);
+    
+
+    if (freqSender >= tempSetting.freq) {
+      io.emit("temp", temp);
+      freqSender = 1;
+    } else freqSender = freqSender + 1;
   });
 });
+
+io.on("connect", () => {
+  io.emit("j5name", "ST001");
+});
+
 io.on("led", (msg) => {
   led = msg;
   console.log("led from server:", led);
@@ -59,7 +89,12 @@ io.on("getLedStatus", (msg) => {
   io.emit("ledStatus", led);
 });
 
-io.on("getTempInit", (msg) => {
+io.on("getTemp", (msg) => {
   console.log("Listen getTempInit from server");
   io.emit("temp", temp);
 });
+
+// io.on("tempSetting", (msg) => {
+//   console.log(msg);
+//   tempSetting = msg;
+// });

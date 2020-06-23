@@ -69,7 +69,8 @@
             height: 60px;
             cursor: pointer;
         }
-        .button:focus{
+
+        .button:focus {
             outline: none;
         }
 
@@ -116,8 +117,8 @@
     <script>
         var led = { led1: 0, led2: 0, led3: 0 }
         var temp = 0;
-        var socket = io();
-        socket.on('ledStatus2Web', (msg) => {
+        var socket = io('/station01');
+        socket.on('ledStatus', (msg) => {
             led = msg;
             console.log(led);
             if (led.led1 === true) {
@@ -147,9 +148,11 @@
                 socket.emit('led', led)
             });
             $("#bt3").click(function () {
+                var tempSetting = {freq:5}
                 // $("#bt3").toggleClass('button3');
                 led.led3 = !led.led3;
                 socket.emit('led', led)
+                // socket.emit('tempSetting',tempSetting)
             });
 
         });
