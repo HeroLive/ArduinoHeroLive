@@ -1,0 +1,111 @@
+int led01 = 2;
+int led02 = 3;
+int led03 = 4;
+int led04 = 5;
+int waitTime = 2000;
+void setup() {
+  // put your setup code here, to run once:
+  pinMode(led01,OUTPUT);
+  pinMode(led02,OUTPUT);
+  pinMode(led03,OUTPUT);
+  pinMode(led04,OUTPUT);
+}
+void loop() {
+  // put your main code here, to run repeatedly:
+  //0
+  digitalWrite(led01,LOW);
+  digitalWrite(led02,LOW);
+  digitalWrite(led03,LOW);
+  digitalWrite(led04,LOW);
+  delay(waitTime);
+  //1
+  digitalWrite(led01,LOW);
+  digitalWrite(led02,LOW);
+  digitalWrite(led03,LOW);
+  digitalWrite(led04,HIGH);
+  delay(waitTime);
+  //2
+  digitalWrite(led01,LOW);
+  digitalWrite(led02,LOW);
+  digitalWrite(led03,HIGH);
+  digitalWrite(led04,LOW);
+  delay(waitTime);
+  //3
+  digitalWrite(led01,LOW);
+  digitalWrite(led02,LOW);
+  digitalWrite(led03,HIGH);
+  digitalWrite(led04,HIGH);
+  delay(waitTime);
+  //4
+  digitalWrite(led01,LOW);
+  digitalWrite(led02,HIGH);
+  digitalWrite(led03,LOW);
+  digitalWrite(led04,LOW);
+  delay(waitTime);
+  //5
+  digitalWrite(led01,LOW);
+  digitalWrite(led02,HIGH);
+  digitalWrite(led03,LOW);
+  digitalWrite(led04,HIGH);
+  delay(waitTime);
+  //6
+  digitalWrite(led01,LOW);
+  digitalWrite(led02,HIGH);
+  digitalWrite(led03,HIGH);
+  digitalWrite(led04,LOW);
+  delay(waitTime);
+  //7
+  digitalWrite(led01,LOW);
+  digitalWrite(led02,HIGH);
+  digitalWrite(led03,HIGH);
+  digitalWrite(led04,HIGH);
+  delay(waitTime);
+
+  //8
+  digitalWrite(led01,HIGH);
+  digitalWrite(led02,LOW);
+  digitalWrite(led03,LOW);
+  digitalWrite(led04,LOW);
+  delay(waitTime);
+  //9
+  digitalWrite(led01,HIGH);
+  digitalWrite(led02,LOW);
+  digitalWrite(led03,LOW);
+  digitalWrite(led04,HIGH);
+  delay(waitTime);
+  //10
+  digitalWrite(led01,HIGH);
+  digitalWrite(led02,LOW);
+  digitalWrite(led03,HIGH);
+  digitalWrite(led04,LOW);
+  delay(waitTime);
+  digitalWrite(led01,HIGH);
+  digitalWrite(led02,LOW);
+  digitalWrite(led03,HIGH);
+  digitalWrite(led04,HIGH);
+  delay(waitTime);
+  //12
+  digitalWrite(led01,HIGH);
+  digitalWrite(led02,HIGH);
+  digitalWrite(led03,LOW);
+  digitalWrite(led04,LOW);
+  delay(waitTime);
+  //13
+  digitalWrite(led01,HIGH);
+  digitalWrite(led02,HIGH);
+  digitalWrite(led03,LOW);
+  digitalWrite(led04,HIGH);
+  delay(waitTime);
+  //14
+  digitalWrite(led01,HIGH);
+  digitalWrite(led02,HIGH);
+  digitalWrite(led03,HIGH);
+  digitalWrite(led04,LOW);
+  delay(waitTime);
+  //15
+  digitalWrite(led01,HIGH);
+  digitalWrite(led02,HIGH);
+  digitalWrite(led03,HIGH);
+  digitalWrite(led04,HIGH);
+  delay(waitTime);
+}
