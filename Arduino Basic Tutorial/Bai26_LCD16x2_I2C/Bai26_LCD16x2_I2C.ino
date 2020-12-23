@@ -1,8 +1,8 @@
 #include <Wire.h> 
 #include <LiquidCrystal_I2C.h>
 LiquidCrystal_I2C lcd(0x27,16,2); // or 0x3F
-float x = 10.5;
-float y = 19.0;
+float x = 10.53;
+float y = 19.25;
 int counter = 0;
 void setup()
 {
@@ -33,6 +33,6 @@ void loop()
   lcd.setCursor(8,1);
   lcd.print("Y: ");
   lcd.setCursor(10,1);
-  lcd.print(y);
+  lcd.print(y,1);
   delay(1000);
 }
