@@ -12,7 +12,7 @@ void setup()
   lcd.print("Hero Live");
   lcd.setCursor(0,1);
   lcd.print("Xin chao cac ban");
-  delay(2000);
+  delay(200000);
   lcd.clear();
 }
 
