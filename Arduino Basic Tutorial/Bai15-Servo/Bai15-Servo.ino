@@ -14,7 +14,8 @@ void setup() {
 void loop() {
   // put your main code here, to run repeatedly:
   readVal = analogRead(potPin);
-  
+  delay(100);
+//  Serial.println(readVal);
   servoPos = map(readVal,0,1023,0,180);
   Serial.println(servoPos);
   
