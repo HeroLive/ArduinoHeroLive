@@ -24,9 +24,9 @@ void loop() {
   digitalWrite(dirX,LOW);
   for (int i = 1 ; i<= x ; i=i+1){
     digitalWrite(stepX,HIGH);
-    delay(10);
+    delay(1);
     digitalWrite(stepX,LOW);
-    delay(10);
+    delay(1);
   }
   delay(2000);
 }
