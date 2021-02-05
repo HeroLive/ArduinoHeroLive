@@ -7,7 +7,7 @@
 #include <EEPROM.h>
 
 // You should get Auth Token in the Blynk App.
-char auth[] = "iKvG0uSG1DireTrH9ltelbI44DbdqXrl";
+char auth[] = "Your token";
 
 void setup()
 {
