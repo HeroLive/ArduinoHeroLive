@@ -4,16 +4,10 @@
 
 #define MotorASpeed 5
 #define MotorADir   0 // HIGH --> A+ -> Motor+, A- -> Motor-
-//#define MotorBSpeed  4
-//#define MotorBDir    2
 
-int haftSpeed = 512;
-int maxSpeed = 1020;
-int noSpeed = 0;
-
-char auth[] = "iKvG0uSG1DireTrH9ltelbI44DbdqXrl";
-char ssid[] = "Hero Live";
-char pass[] = "14022020";
+char auth[] = "Your token";
+char ssid[] = "Wifi_name";
+char pass[] = "Password";
 
 void moveControl(int x)
 {
