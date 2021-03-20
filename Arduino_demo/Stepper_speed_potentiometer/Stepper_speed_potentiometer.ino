@@ -38,7 +38,8 @@ void moveX(long totalRound, bool dir, float speed_) {
   Serial.print(" with speed ");
   Serial.print(speed_);
   Serial.println(" round/min");
-  
+
+  digitalWrite(dirPinX, dir);
   while (stepsCount < totalPulse) {
     stepsCount++;
     digitalWrite(stepPinX, HIGH);
