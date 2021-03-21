@@ -3,7 +3,7 @@ int en = 8 ;
 int dirPinX = 5 ;
 int stepPinX = 2 ;
 
-long pulsePerRoundX = 200; // so xung/vong
+long pulsePerRoundX = 400; // so xung/vong
 long distancePerRoundX = 4 ; //mm
 long pulsePerDistanceX= pulsePerRoundX/distancePerRoundX;  //pulse/mm
 
@@ -19,10 +19,12 @@ void setup()
 }
 
 void loop() {
-  moveX(50, LOW);
   delay(2000);
-  moveX(50, HIGH);
-  delay(2000);
+  moveX(10, LOW);  //move 10mm
+  delay(1000);
+  moveX(10, LOW);  //move +10mm  (~20 mm)
+  delay(1000);
+  moveX(20, HIGH); // move to Zero
 }
 
 //moving dx (mm);
