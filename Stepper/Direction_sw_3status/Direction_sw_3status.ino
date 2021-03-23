@@ -25,6 +25,7 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
+  Serial.println(analogRead(A0));
   dir_current_status = dirStatus();
   if (dir_last_status != dir_current_status) {
     switch (dir_current_status) {
@@ -54,7 +55,6 @@ void loop() {
 
 int dirStatus() {
   int value = analogRead(A0);
-  Serial.println(value);
   if (value < 100) {
     return CLOCKWISE;
   } else if (value < 900) {
