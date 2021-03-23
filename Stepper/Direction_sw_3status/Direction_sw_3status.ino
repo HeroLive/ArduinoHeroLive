@@ -9,7 +9,7 @@ int stepPinX = 2 ;
 
 int dir_current_status = 0;
 int dir_last_status = 0;
-bool dirX = LOW;
+bool dirX = HIGH;
 
 void setup() {
   // put your setup code here, to run once:
@@ -27,17 +27,18 @@ void loop() {
   // put your main code here, to run repeatedly:
   Serial.println(analogRead(A0));
   dir_current_status = dirStatus();
+//  Serial.println(dir_current_status);
   if (dir_last_status != dir_current_status) {
     switch (dir_current_status) {
       case STOP:
-        Serial.println("STOP");
+//        Serial.println("STOP");
         break;
       case CLOCKWISE:
-        Serial.println("CLOCKWISE");
+//        Serial.println("CLOCKWISE");
         digitalWrite(dirPinX, dirX);
         break;
       case ANTI_CLOCKWISE:
-        Serial.println("ANTI_CLOCKWISE");
+//        Serial.println("ANTI_CLOCKWISE");
         digitalWrite(dirPinX, !dirX);
         break;
     }
@@ -55,9 +56,9 @@ void loop() {
 
 int dirStatus() {
   int value = analogRead(A0);
-  if (value < 100) {
+  if (value < 250) {
     return CLOCKWISE;
-  } else if (value < 900) {
+  } else if (value < 750) {
     return STOP;
   } else {
     return ANTI_CLOCKWISE;
