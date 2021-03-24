@@ -25,9 +25,9 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
-  Serial.println(analogRead(A0));
+//  Serial.println(analogRead(A0));
   dir_current_status = dirStatus();
-//  Serial.println(dir_current_status);
+  Serial.println(dir_current_status);
   if (dir_last_status != dir_current_status) {
     switch (dir_current_status) {
       case STOP:
@@ -56,9 +56,9 @@ void loop() {
 
 int dirStatus() {
   int value = analogRead(A0);
-  if (value < 250) {
+  if (value < 300) {
     return CLOCKWISE;
-  } else if (value < 750) {
+  } else if (value < 700) {
     return STOP;
   } else {
     return ANTI_CLOCKWISE;
