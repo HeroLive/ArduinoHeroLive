@@ -73,7 +73,7 @@ void setting() {
 }
 // ----------------------------------------------
 void goHomeX() {
-  speedScroll = 10;
+  speedScroll = 10; //vong/phut
   period = 1000000 / (speedScroll / 60 * pulsePerRound);
   Serial.println(period);
   digitalWrite(dirPinX, !dirXDefaut); //go to left
