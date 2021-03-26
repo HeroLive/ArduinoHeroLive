@@ -21,7 +21,7 @@ void setup() {
   pinMode(selectSwitch, INPUT_PULLUP);
   attachInterrupt(0,PinA,RISING); // set an interrupt on PinA, looking for a rising edge signal and executing the "PinA" Interrupt Service Routine (below)
   attachInterrupt(1,PinB,RISING); // set an interrupt on PinB, looking for a rising edge signal and executing the "PinB" Interrupt Service Routine (below)
-  Serial.begin(115200); // start the serial monitor link
+  Serial.begin(9600); // start the serial monitor link
 }
 
 void PinA(){

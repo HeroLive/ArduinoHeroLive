@@ -9,14 +9,14 @@ static int enSW = 9; //The select switch for our encoder.
 
 volatile byte aFlag = 0; // let's us know when we're expecting a rising edge on pinA to signal that the encoder has arrived at a detent
 volatile byte bFlag = 0; // let's us know when we're expecting a rising edge on pinB to signal that the encoder has arrived at a detent (opposite direction to when aFlag is set)
-volatile uint16_t encoderPos = 0; //this variable stores our current value of encoder position. Change to int or uin16_t instead of byte if you want to record a larger range than 0-255
-volatile uint16_t oldEncPos = 0; //stores the last encoder position value so we can compare to the current reading and see if it has changed (so we know when to print to the serial monitor)
+int encoderPos = 0; //this variable stores our current value of encoder position. Change to int or uin16_t instead of byte if you want to record a larger range than 0-255
+int oldEncPos = 0; //stores the last encoder position value so we can compare to the current reading and see if it has changed (so we know when to print to the serial monitor)
 volatile byte reading = 0; //somewhere to store the direct values we read from our interrupt pins before checking to see if we have moved a whole detent
 //---------
 
 int ledPin = 13; // set the signal pin out here.
 int flashButton = 8; //
-int pulseNum = 400; // set the Pulse number here.
+int pulseNum = 100; // set the Pulse number here.
 int pulseDuration = 50; // set the Pulse width here.
 
 #define STATE_STARTUP 0
@@ -26,6 +26,11 @@ int pulseDuration = 50; // set the Pulse width here.
 #define STATE_FLASH 4
 
 byte currentState = STATE_STARTUP;
+
+//------
+int mainMenuCnt = 1;
+int settingMenuCnt = 1;
+int numOfSetting = 2;
 
 
 void setup()
@@ -56,7 +61,10 @@ void setup()
 
 void loop()
 {
-  Serial.println(digitalRead(flashButton));
+  //  if (oldEncPos != encoderPos) {
+  //    Serial.println(encoderPos);
+  //    oldEncPos = encoderPos;
+  //  }
 }
 
 
@@ -79,7 +87,6 @@ void updateState(byte aState)
       break;
     case STATE_MAINMENU:
       Serial.println("STATE_MAINMENU");
-      delay(1000);
       mainMenu();
       break;
     case STATE_SETTING:
@@ -101,26 +108,76 @@ void updateState(byte aState)
 //--------------------------------
 void mainMenu() {
   //display line 0
-  lcd.clear();
-  lcd.setCursor(1, 0); //frint from column 1, row 0
-  lcd.print("Setting");
-  lcd.setCursor(1, 1);
-  lcd.print("Flash");
+  int currentEncoderPos = encoderPos;
+  Serial.println(currentEncoderPos);
+  updateMainMenu();
   while (true) {
+    Serial.print(currentEncoderPos);
+    Serial.print(" ");
+    Serial.print(encoderPos);
+    Serial.print(" ");
+    Serial.println(mainMenuCnt);
+
+    if (currentEncoderPos != encoderPos) {
+      mainMenuCnt = mainMenuCnt + (encoderPos - currentEncoderPos);
+      currentEncoderPos = encoderPos;
+      updateMainMenu();
+    }
     if (digitalRead(enSW) == 0) {
       while (digitalRead(enSW) == 0);
-      updateState(STATE_WAITTORUN);
+      if (mainMenuCnt == 1) {
+        updateState(STATE_SETTING);
+      } else if (mainMenuCnt == 2) {
+        updateState(STATE_WAITTORUN);
+      }
     }
   }
 
 }
 // ---------------------------
 void setting() {
+  long timewait = millis();
   Serial.println("STATE_SETTING");
-
+  int currentEncoderPos = encoderPos;
+  updateSettingMenu();
+  while (true) {
+    Serial.println(encoderPos);
+    if (digitalRead(enSW) == 0) {
+      timewait = millis();
+      while (digitalRead(enSW) == 0);
+      settingMenuCnt++;
+      if (settingMenuCnt > numOfSetting) {
+        settingMenuCnt = 1;
+      }
+      updateSettingMenu();
+    }
+    if (currentEncoderPos != encoderPos) {
+      timewait = millis();
+      switch (settingMenuCnt) {
+        case 1:
+          pulseNum = pulseNum + 10 * (encoderPos - currentEncoderPos);
+          if (pulseNum < 0) {
+            pulseNum = 0;
+          }
+          break;
+        case 2:
+          pulseDuration = pulseDuration + (encoderPos - currentEncoderPos);
+          if (pulseDuration < 0) {
+            pulseDuration = 0;
+          }
+          break;
+      }
+      currentEncoderPos = encoderPos;
+      updateSettingMenu();
+    }
+    if (millis() - timewait > 5000) {
+      updateState(STATE_MAINMENU);
+    }
+  }
 }
 
 void waitToRun() {
+  long timewait = millis();
   Serial.println("STATE_WAITTORUN");
   lcd.clear();
   lcd.setCursor(5, 0); //frint from column 1, row 0
@@ -132,6 +189,9 @@ void waitToRun() {
     if (digitalRead(flashButton) == 0) {
       while (digitalRead(flashButton) == 0);
       updateState(STATE_FLASH);
+    }
+    if (millis() - timewait > 5000) {
+      updateState(STATE_MAINMENU);
     }
   }
 }
@@ -158,6 +218,7 @@ void PinA() {
   cli(); //stop interrupts happening before we read pin values
   reading = PIND & 0xC; // read all eight pin values then strip away all but pinA and pinB's values
   if (reading == B00001100 && aFlag) { //check that we have both pins at detent (HIGH) and that we are expecting detent on this pin's rising edge
+
     encoderPos --; //decrement the encoder's position count
     bFlag = 0; //reset flags for the next turn
     aFlag = 0; //reset flags for the next turn
@@ -176,4 +237,56 @@ void PinB() {
   }
   else if (reading == B00001000) aFlag = 1; //signal that we're expecting pinA to signal the transition to detent from free rotation
   sei(); //restart interrupts
+}
+//-------------------
+void updateMainMenu() {
+  switch (mainMenuCnt) {
+    case 0:
+      mainMenuCnt = 1;
+      break;
+    case 1:
+      lcd.clear();
+      lcd.setCursor(0, 0); //frint from column 1, row 0
+      lcd.print(">Setting");
+      lcd.setCursor(1, 1);
+      lcd.print("Flash");
+      break;
+    case 2:
+      lcd.clear();
+      lcd.setCursor(1, 0); //frint from column 0, row 0
+      lcd.print("Setting");
+      lcd.setCursor(0, 1);
+      lcd.print(">Flash");
+      break;
+    case 3:
+      mainMenuCnt = 2;
+      break;
+  }
+}
+//-------------------
+void updateSettingMenu() {
+  switch (settingMenuCnt) {
+    case 1:
+      lcd.clear();
+      lcd.setCursor(0, 0); //frint from column 1, row 0
+      lcd.print(">PulseNum");
+      lcd.setCursor(11, 0);
+      lcd.print(pulseNum);
+      lcd.setCursor(1, 1);
+      lcd.print("PulseDur");
+      lcd.setCursor(11, 1);
+      lcd.print(pulseDuration);
+      break;
+    case 2:
+      lcd.clear();
+      lcd.setCursor(1, 0); //frint from column 1, row 0
+      lcd.print("PulseNum");
+      lcd.setCursor(11, 0);
+      lcd.print(pulseNum);
+      lcd.setCursor(0, 1);
+      lcd.print(">PulseDur");
+      lcd.setCursor(11, 1);
+      lcd.print(pulseDuration);
+      break;
+  }
 }
