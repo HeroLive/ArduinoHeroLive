@@ -1,13 +1,15 @@
+int en = 8 ;
 int dirPinX = 5 ;
 int stepPinX = 2 ;
 int endPinXLeft = 9;
 int endPinXRight = 11;
 
-#define STATE_SETTING 0
-#define STATE_GO_HOME 1
-#define STATE_MOVE 2
+#define STATE_STARTUP 0
+#define STATE_SETTING 1
+#define STATE_GO_HOME 2
+#define STATE_MOVE 3
 
-byte currentState = STATE_SETTING;
+byte currentState = STATE_STARTUP;
 
 long pulsePerRound = 200; // so xung/vong
 long period =   10000; // time bettween 2 pulse - us
@@ -20,11 +22,15 @@ bool dirXDefaut = LOW;
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(9600);
+  pinMode(en, OUTPUT); // Enable
   pinMode(stepPinX, OUTPUT); // Step
   pinMode(dirPinX, OUTPUT); // Dir
   pinMode(endPinXLeft, INPUT_PULLUP); // end stop left
   pinMode(endPinXRight, INPUT_PULLUP); // end stop right
+
+  digitalWrite(en, LOW); // Set Enable low
   digitalWrite(dirPinX, dirXDefaut);
+
   updateState(STATE_SETTING);
 }
 
@@ -62,17 +68,16 @@ void updateState(byte aState)
   currentState = aState;
 }
 // ----------------------------------------------
-void setting(){
+void setting() {
   updateState(STATE_GO_HOME);
 }
 // ----------------------------------------------
 void goHomeX() {
-  speedScroll = 20;
+  speedScroll = 10;
   period = 1000000 / (speedScroll / 60 * pulsePerRound);
   Serial.println(period);
   digitalWrite(dirPinX, !dirXDefaut); //go to left
   while (true) {
-    //    Serial.println(period);
     digitalWrite(stepPinX, LOW);
     delayMicroseconds(0.5 * period);
     digitalWrite(stepPinX, HIGH);
@@ -85,7 +90,7 @@ void goHomeX() {
 }
 // -----------------------------------------------
 void moving() {
-  speedScroll = 120;
+  speedScroll = 30;
   period = 1000000 / (speedScroll / 60 * pulsePerRound);
   Serial.println("Moving ...");
   while (true) {
