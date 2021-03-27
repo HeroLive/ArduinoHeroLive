@@ -90,7 +90,6 @@ void updateState(byte aState)
       mainMenu();
       break;
     case STATE_SETTING:
-      delay(1000);
       setting();
       break;
     case STATE_WAITTORUN:
@@ -109,15 +108,8 @@ void updateState(byte aState)
 void mainMenu() {
   //display line 0
   int currentEncoderPos = encoderPos;
-  Serial.println(currentEncoderPos);
   updateMainMenu();
   while (true) {
-    Serial.print(currentEncoderPos);
-    Serial.print(" ");
-    Serial.print(encoderPos);
-    Serial.print(" ");
-    Serial.println(mainMenuCnt);
-
     if (currentEncoderPos != encoderPos) {
       mainMenuCnt = mainMenuCnt + (encoderPos - currentEncoderPos);
       currentEncoderPos = encoderPos;
@@ -141,7 +133,6 @@ void setting() {
   int currentEncoderPos = encoderPos;
   updateSettingMenu();
   while (true) {
-    Serial.println(encoderPos);
     if (digitalRead(enSW) == 0) {
       timewait = millis();
       while (digitalRead(enSW) == 0);
