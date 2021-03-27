@@ -5,7 +5,7 @@ LiquidCrystal_I2C lcd(0x27, 16, 2); // or 0x3F
 //encoder
 static int pinA = 2; // Our first hardware interrupt pin is digital pin 2
 static int pinB = 3; // Our second hardware interrupt pin is digital pin 3
-static int enSW = 9; //The select switch for our encoder.
+static int enSW = 4; //The select switch for our encoder.
 
 volatile byte aFlag = 0; // let's us know when we're expecting a rising edge on pinA to signal that the encoder has arrived at a detent
 volatile byte bFlag = 0; // let's us know when we're expecting a rising edge on pinB to signal that the encoder has arrived at a detent (opposite direction to when aFlag is set)
@@ -15,9 +15,11 @@ volatile byte reading = 0; //somewhere to store the direct values we read from o
 //---------
 
 int ledPin = 13; // set the signal pin out here.
-int flashButton = 8; //
-int pulseNum = 100; // set the Pulse number here.
-int pulseDuration = 50; // set the Pulse width here.
+int flashButton = 5; //
+int buzzer = 6;
+int pulseNum = 40; // set the Pulse number here.
+int onTime = 5; // set the Pulse width here.
+int offTime = 5;
 
 #define STATE_STARTUP 0
 #define STATE_MAINMENU 1
@@ -40,7 +42,11 @@ void setup()
 
   pinMode(ledPin, OUTPUT);
   pinMode(flashButton, INPUT_PULLUP);
+  pinMode(buzzer,OUTPUT);
+  
   digitalWrite(ledPin, HIGH);
+  digitalWrite(buzzer, LOW);
+  
 
   pinMode(pinA, INPUT_PULLUP); // set pinA as an input, pulled HIGH to the logic voltage (5V or 3.3V for most cases)
   pinMode(pinB, INPUT_PULLUP); // set pinB as an input, pulled HIGH to the logic voltage (5V or 3.3V for most cases)
@@ -102,7 +108,7 @@ void updateState(byte aState)
     case STATE_FLASH:
       delay(100);
       Serial.println("STATE_FLASH");
-      flash(pulseNum, pulseDuration);
+      flash(pulseNum, onTime, offTime);
       break;
   }
 
@@ -144,7 +150,7 @@ void setting() {
     }
     if (digitalRead(enSW) == 0) {
       while (digitalRead(enSW) == 0);
-      if (settingMenuCnt == 3) {
+      if (settingMenuCnt == 4) {
         updateState(STATE_MAINMENU);
       } else {
         updateState(STATE_SETPARA);
@@ -193,15 +199,21 @@ void subSettingMenu() {
     if (currentEncoderPos != encoderPos) {
       switch (settingMenuCnt) {
         case 1:
-          pulseNum = pulseNum + 10 * (encoderPos - currentEncoderPos);
+          pulseNum = pulseNum + (encoderPos - currentEncoderPos);
           if (pulseNum < 0) {
             pulseNum = 0;
           }
           break;
         case 2:
-          pulseDuration = pulseDuration + (encoderPos - currentEncoderPos);
-          if (pulseDuration < 0) {
-            pulseDuration = 0;
+          onTime = onTime + (encoderPos - currentEncoderPos);
+          if (onTime < 0) {
+            onTime = 0;
+          }
+          break;
+        case 3:
+          offTime = offTime + (encoderPos - currentEncoderPos);
+          if (onTime < 0) {
+            offTime = 0;
           }
           break;
       }
@@ -212,23 +224,25 @@ void subSettingMenu() {
 
 }
 
-void flash(int repeats, int pulseDuration)
+void flash(int repeats, int onTime, int offTime)
 {
   lcd.clear();
   lcd.setCursor(4, 0); //frint from column 1, row 0
   lcd.print("FLASHING");
   lcd.setCursor(0, 1);
   lcd.print("..._|_|_|_|_|_|_");
+  digitalWrite(buzzer,HIGH);
   for (int i = 0; i < repeats; i++)
   {
     digitalWrite(ledPin, LOW);
-    delay(pulseDuration);
+    delay(offTime);
     digitalWrite(ledPin, HIGH);
-    delay(pulseDuration);
-  }
+    delay(onTime);
+  } 
   lcd.setCursor(0, 1);
   lcd.print("................");
   delay(2000);
+  digitalWrite(buzzer,LOW);
   updateState(STATE_WAITTORUN);
 }
 
@@ -295,9 +309,9 @@ void updateSettingMenu() {
       lcd.setCursor(11, 0);
       lcd.print(pulseNum);
       lcd.setCursor(1, 1);
-      lcd.print("PulseDur");
+      lcd.print("ON Time");
       lcd.setCursor(11, 1);
-      lcd.print(pulseDuration);
+      lcd.print(onTime);
       break;
     case 2:
       lcd.clear();
@@ -306,17 +320,30 @@ void updateSettingMenu() {
       lcd.setCursor(11, 0);
       lcd.print(pulseNum);
       lcd.setCursor(0, 1);
-      lcd.print(">PulseDur");
+      lcd.print(">ON Time");
       lcd.setCursor(11, 1);
-      lcd.print(pulseDuration);
+      lcd.print(onTime);
       break;
     case 3:
       lcd.clear();
       lcd.setCursor(0, 0); //frint from column 1, row 0
-      lcd.print(">Main menu");
+      lcd.print(">OFF Time");
+      lcd.setCursor(11, 0);
+      lcd.print(offTime);
+      lcd.setCursor(1, 1); //frint from column 1, row 0
+      lcd.print("Main menu");
       break;
     case 4:
-      settingMenuCnt = 3;
+      lcd.clear();
+      lcd.setCursor(1, 0); //frint from column 1, row 0
+      lcd.print("OFF Time");
+      lcd.setCursor(11, 0);
+      lcd.print(offTime);
+      lcd.setCursor(0, 1); //frint from column 1, row 0
+      lcd.print(">Main menu");
+      break;
+    case 5:
+      settingMenuCnt = 4;
       break;
   }
 }
@@ -333,9 +360,16 @@ void updateSubSettingMenu() {
     case 2:
       lcd.clear();
       lcd.setCursor(0, 0); //frint from column 1, row 0
-      lcd.print("Pulse Duration");
+      lcd.print("ON Time");
       lcd.setCursor(0, 1);
-      lcd.print(pulseDuration);
+      lcd.print(onTime);
+      break;
+    case 3:
+      lcd.clear();
+      lcd.setCursor(0, 0); //frint from column 1, row 0
+      lcd.print("OFF Time");
+      lcd.setCursor(0, 1);
+      lcd.print(offTime);
       break;
   }
 }
