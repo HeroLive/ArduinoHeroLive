@@ -133,19 +133,16 @@ void mainMenu() {
 }
 // ---------------------------
 void setting() {
-  long timewait = millis();
   Serial.println("STATE_SETTING");
   int currentEncoderPos = encoderPos;
   updateSettingMenu();
   while (true) {
     if (currentEncoderPos != encoderPos) {
-      timewait = millis();
       settingMenuCnt = settingMenuCnt + (encoderPos - currentEncoderPos);
       currentEncoderPos = encoderPos;
       updateSettingMenu();
     }
     if (digitalRead(enSW) == 0) {
-      timewait = millis();
       while (digitalRead(enSW) == 0);
       if (settingMenuCnt == 3) {
         updateState(STATE_MAINMENU);
@@ -154,44 +151,7 @@ void setting() {
       }
       break;
     }
-    if (millis() - timewait > 5000) {
-      updateState(STATE_MAINMENU);
-      break;
-    }
   }
-  /*
-    while (true) {
-      if (digitalRead(enSW) == 0) {
-        timewait = millis();
-        while (digitalRead(enSW) == 0);
-        settingMenuCnt++;
-        if (settingMenuCnt > numOfSetting) {
-          settingMenuCnt = 1;
-        }
-        updateSettingMenu();
-      }
-      if (currentEncoderPos != encoderPos) {
-        timewait = millis();
-        switch (settingMenuCnt) {
-          case 1:
-            pulseNum = pulseNum + 10 * (encoderPos - currentEncoderPos);
-            if (pulseNum < 0) {
-              pulseNum = 0;
-            }
-            break;
-          case 2:
-            pulseDuration = pulseDuration + (encoderPos - currentEncoderPos);
-            if (pulseDuration < 0) {
-              pulseDuration = 0;
-            }
-            break;
-        }
-        currentEncoderPos = encoderPos;
-        updateSettingMenu();
-      }
-
-    }
-  */
 }
 
 void waitToRun() {
@@ -201,14 +161,19 @@ void waitToRun() {
   lcd.setCursor(5, 0); //frint from column 1, row 0
   lcd.print("FLASH");
   lcd.setCursor(1, 1);
-  lcd.print("Wait to run");
+  lcd.print("Push to run");
   while (true) {
     //    Serial.println(digitalRead(flashButton));
     if (digitalRead(flashButton) == 0) {
       while (digitalRead(flashButton) == 0);
       updateState(STATE_FLASH);
     }
-    if (millis() - timewait > 5000) {
+    if (millis() - timewait > 10000) {
+      updateState(STATE_MAINMENU);
+      break;
+    }
+    if (digitalRead(enSW) == 0) {
+      while (digitalRead(enSW) == 0);
       updateState(STATE_MAINMENU);
       break;
     }
@@ -250,10 +215,10 @@ void subSettingMenu() {
 void flash(int repeats, int pulseDuration)
 {
   lcd.clear();
-  lcd.setCursor(5, 0); //frint from column 1, row 0
-  lcd.print("FLASH");
+  lcd.setCursor(4, 0); //frint from column 1, row 0
+  lcd.print("FLASHING");
   lcd.setCursor(0, 1);
-  lcd.print("...|_|_|_|_|....");
+  lcd.print("..._|_|_|_|_|_|_");
   for (int i = 0; i < repeats; i++)
   {
     digitalWrite(ledPin, LOW);
@@ -261,6 +226,9 @@ void flash(int repeats, int pulseDuration)
     digitalWrite(ledPin, HIGH);
     delay(pulseDuration);
   }
+  lcd.setCursor(0, 1);
+  lcd.print("................");
+  delay(2000);
   updateState(STATE_WAITTORUN);
 }
 
