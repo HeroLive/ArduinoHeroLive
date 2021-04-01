@@ -64,6 +64,7 @@ void setup() {
 }
 
 void loop() {
+  Serial.println(modeState);
   switch(modeState){
     
     case 0:
@@ -108,6 +109,7 @@ void loop() {
       displayBlink("A",2);
       if(enSwStatus==0&&enSwStatusLast==1){
         modeState=3;
+        displayBlink("Null",-1);
       }
       enSwStatusLast=enSwStatus;
       break;
@@ -208,6 +210,9 @@ int setNum(int num) {
      if ((millis()*5/1000)%2==0){
         displayB.setSegments(segOff, 2, pos);
      } else displayB.showNumberDecEx(minSetB*100 + secSetB, 0b01000000, true, 4, 0);
+  } else {
+    displayA.showNumberDecEx(minSetA*100 + secSetA, 0b01000000, true, 4, 0);
+    displayB.showNumberDecEx(minSetB*100 + secSetB, 0b01000000, true, 4, 0);
   }
  }
 
