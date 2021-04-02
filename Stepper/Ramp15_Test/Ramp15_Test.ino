@@ -50,16 +50,28 @@ void setup()
 }
 
 void loop() {
-  moving(10, stepPinX, dirPinX, LOW); // move 10 round
+  moving(5, stepPinX, dirPinX, LOW); // move 5 round
   delay(200);
-  moving(5, stepPinY, dirPinY, LOW);  //move 10 round
-  delay(100);
+  moving(5, stepPinX, dirPinX, HIGH); // move 5 round
+  delay(500);
+  moving(5, stepPinY, dirPinY, LOW);  //move 5 round
+  delay(200);
+  moving(5, stepPinY, dirPinY, HIGH);  //move 5 round
+  delay(500);
   moving(5, stepPinZ, dirPinZ, LOW);  //move 10 round
-  delay(100);
+  delay(200);
+  moving(5, stepPinZ, dirPinZ, HIGH);  //move 10 round
+  delay(500);
   moving(5, stepPinE0, dirPinE0, LOW);  //move 10 round
   delay(100);
+   moving(5, stepPinE0, dirPinE0, HIGH);  //move 10 round
+  delay(500);
   moving(5, stepPinE1, dirPinE1, LOW);  //move 10 round
-  delay(100);
+  delay(200);
+  moving(5, stepPinE1, dirPinE1, HIGH);  //move 10 round
+  delay(500);
+
+  delay(5000);
 
 }
 
