@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module fritzingVersion="0.9.3b.04.19.5c895d327c44a3114e5fcc9d8260daf0cbb52806" icon="Mine.png">
+    <title>My Parts</title>
+    <instances>
+        <instance moduleIdRef="Computer Fan_1f3374d2f230bed29c494485563c17e2_3" modelIndex="85471816" path="C:/Users/Admin/Documents/Fritzing/parts/user/Computer Fan_1f3374d2f230bed29c494485563c17e2_3.fzp">
+            <property name="form" value="♂ (male)"/>
+            <views/>
+        </instance>
+        <instance moduleIdRef="adafruit_1d23f1adcc3609f10d1b978cd26d89ba_10" modelIndex="85471671" path="C:/Users/Admin/Documents/Fritzing/parts/user/adafruit_1d23f1adcc3609f10d1b978cd26d89ba_10.fzp">
+            <property name="part number" value="Adafruit #3200"/>
+            <views/>
+        </instance>
+        <instance moduleIdRef="3cbb886ccc8dee1a9eeb967331875e2e" modelIndex="85471817" path="C:/Users/Admin/Documents/Fritzing/parts/user/2.1mm_Barrel_Jack_with_Terminal_Block__a366fa84f392f41e0aae50ae8126b7da.fzp">
+            <views/>
+        </instance>
+        <instance moduleIdRef="fc-51_85d98481ce3be6f2e9b641181c0f798b_1" modelIndex="85471818" path="C:/Users/Admin/Documents/Fritzing/parts/user/fc-51_85d98481ce3be6f2e9b641181c0f798b_1.fzp">
+            <views/>
+        </instance>
+        <instance moduleIdRef="prefix0000_868f6064c99165b296ffbe10959b1de0_1" modelIndex="85471819" path="C:/Users/Admin/Documents/Fritzing/parts/user/prefix0000_868f6064c99165b296ffbe10959b1de0_1.fzp">
+            <views/>
+        </instance>
+        <instance moduleIdRef="MicroUSBB" modelIndex="85471820" path="C:/Users/Admin/Documents/Fritzing/parts/user/micro-b.fzp" flippedSMD="true">
+            <property name="flippedSMD" value="true"/>
+            <views/>
+        </instance>
+        <instance moduleIdRef="relay_ed7c9cfde668ff26fc461b0e1ebc938d_1" modelIndex="85471821" path="C:/Users/Admin/Documents/Fritzing/parts/user/relay_ed7c9cfde668ff26fc461b0e1ebc938d_1.fzp">
+            <views/>
+        </instance>
+        <instance moduleIdRef="L298N motor driver_ed29594eba4fbd330bd92441a17764ea_15" modelIndex="85471822" path="C:/Users/Admin/Documents/Fritzing/parts/user/L298N motor driver_ed29594eba4fbd330bd92441a17764ea_15.fzp">
+            <views/>
+        </instance>
+        <instance moduleIdRef="adafruit_cb6237a3ed5021dd7894686bb496060d_1" modelIndex="85471823" path="C:/Users/Admin/Documents/Fritzing/parts/user/adafruit_cb6237a3ed5021dd7894686bb496060d_1.fzp">
+            <property name="part number" value="3661"/>
+            <views/>
+        </instance>
+        <instance moduleIdRef="prefix0000_b518fa78c45261fce771aa70cd4fe5fc_6" modelIndex="85471824" path="C:/Users/Admin/Documents/Fritzing/parts/user/prefix0000_b518fa78c45261fce771aa70cd4fe5fc_6.fzp">
+            <views/>
+        </instance>
+        <instance moduleIdRef="ky-040_213c151a688d58f9aaaec7b2af2d1c10_1" modelIndex="85471825" path="C:/Users/Admin/Documents/Fritzing/parts/user/ky-040_213c151a688d58f9aaaec7b2af2d1c10_1.fzp">
+            <property name="part number" value="KY-040"/>
+            <views/>
+        </instance>
+        <instance moduleIdRef="Rotory Encoder Breakout_24e512807da103c589ba9199880e2bb9_5" modelIndex="85471826" path="C:/Users/Admin/Documents/Fritzing/parts/user/Rotory Encoder Breakout_24e512807da103c589ba9199880e2bb9_5.fzp">
+            <views/>
+        </instance>
+        <instance moduleIdRef="dht11_02008e41c0fb1a2b432acbca962cd2be_1" modelIndex="85471827" path="C:/Users/Admin/Documents/Fritzing/parts/user/dht11_02008e41c0fb1a2b432acbca962cd2be_1.fzp">
+            <views/>
+        </instance>
+        <instance moduleIdRef="KY-015_358d19e7bc61514283912af2f61f3436_6" modelIndex="85471423" path="C:/Users/Admin/Documents/Fritzing/parts/user/KY-015_358d19e7bc61514283912af2f61f3436_6.fzp">
+            <views/>
+        </instance>
+        <instance moduleIdRef="OLED 128x64 I2C Monochrome Display_bb571c5409e7e6421c7206ca6943925f_2" modelIndex="85471828" path="C:/Users/Admin/Documents/Fritzing/parts/user/OLED 128x64 I2C Monochrome Display_bb571c5409e7e6421c7206ca6943925f_2.fzp">
+            <views/>
+        </instance>
+        <instance moduleIdRef="50dd7f3c46efb77187e3038e244bc825" modelIndex="85471829" path="C:/Users/Admin/Documents/Fritzing/parts/user/TMP006_Temperature_Sensor__08c8ce7d550daf555710bc75bcdd26f7.fzp">
+            <views/>
+        </instance>
+        <instance moduleIdRef="TFT24_2c85c35b9c389515efe857c311fccf99_13" modelIndex="85471830" path="C:/Users/Admin/Documents/Fritzing/parts/user/TFT24_2c85c35b9c389515efe857c311fccf99_13.fzp">
+            <views/>
+        </instance>
+        <instance moduleIdRef="hc-sr04_ultrafix" modelIndex="85471831" path="C:/SOFT/fritzing.0.9.3b.64.pc/fritzing-parts/core/hc-sr04_ultrafix.fzp">
+            <views/>
+        </instance>
+        <instance moduleIdRef="NodeMCU_4926ed7fed56c66e370d28ec48b9377a_11" modelIndex="85471832" path="C:/Users/Admin/Documents/Fritzing/parts/user/NodeMCU_4926ed7fed56c66e370d28ec48b9377a_11.fzp">
+            <views/>
+        </instance>
+        <instance moduleIdRef="prefix101218_b0c6794812670c3b0d52a1e2cc025c4a_4" modelIndex="85471833" path="C:/Users/Admin/Documents/Fritzing/parts/user/prefix101218_b0c6794812670c3b0d52a1e2cc025c4a_4.fzp">
+            <property name="part number" value="101218"/>
+            <views/>
+        </instance>
+        <instance moduleIdRef="9897e9b539c6a8313a491eb9dbdc592e" modelIndex="85471834" path="C:/Users/Admin/Documents/Fritzing/parts/user/Plastic_Solenoid_Valve__be31321902f5e302489cc0ef15547b83.fzp">
+            <views/>
+        </instance>
+        <instance moduleIdRef="my_GREEN_2pin_Terminal_R0_d8c521178d637ba82ea1bb2dae99d28e_4" modelIndex="85471835" path="C:/Users/Admin/Documents/Fritzing/parts/user/my_GREEN_2pin_Terminal_R0_d8c521178d637ba82ea1bb2dae99d28e_4.fzp">
+            <views/>
+        </instance>
+        <instance moduleIdRef="2ChannelRelay_129217c8947f3fd792dd6483a1c71e2e_24" modelIndex="85471836" path="C:/Users/Admin/Documents/Fritzing/parts/user/2ChannelRelay_129217c8947f3fd792dd6483a1c71e2e_24.fzp">
+            <views/>
+        </instance>
+        <instance moduleIdRef="4ChannelRelay_e015470a6c25bc41368c0c552f0a0dec_23" modelIndex="85471837" path="C:/Users/Admin/Documents/Fritzing/parts/user/4ChannelRelay_e015470a6c25bc41368c0c552f0a0dec_23.fzp">
+            <views/>
+        </instance>
+        <instance moduleIdRef="WX-DC12003_735e44ddc71de70c877f496a7d0e5f0a_1" modelIndex="85471838" path="C:/Users/Admin/Documents/Fritzing/parts/user/WX-DC12003_735e44ddc71de70c877f496a7d0e5f0a_1.fzp">
+            <views/>
+        </instance>
+        <instance moduleIdRef="RAC0x_319cbca29f902ac73a2ab267b19d7e82_1" modelIndex="85471839" path="C:/Users/Admin/Documents/Fritzing/parts/user/RAC0x_319cbca29f902ac73a2ab267b19d7e82_1.fzp">
+            <views/>
+        </instance>
+        <instance moduleIdRef="axial-electrolytic_17f096d226ce436ace09adad5fe76de6_1" modelIndex="85471840" path="C:/Users/Admin/Documents/Fritzing/parts/user/axial-electrolytic_17f096d226ce436ace09adad5fe76de6_1.fzp">
+            <views/>
+        </instance>
+        <instance moduleIdRef="prefix0000_683b62db06dd54dd80bad91d5979a5b7_2" modelIndex="85471841" path="C:/Users/Admin/Documents/Fritzing/parts/user/prefix0000_683b62db06dd54dd80bad91d5979a5b7_2.fzp">
+            <views/>
+        </instance>
+        <instance moduleIdRef="Piezo Speaker - PC Mount _3b5df1b3a475e1dbf20d068c38724e64_1" modelIndex="85471842" path="C:/Users/Admin/Documents/Fritzing/parts/user/Piezo Speaker - PC Mount _3b5df1b3a475e1dbf20d068c38724e64_1.fzp">
+            <property name="part number" value="COM-07950"/>
+            <views/>
+        </instance>
+        <instance moduleIdRef="adafruit_6609f8449e258ae7e31b5367b618ff28_1" modelIndex="85471844" path="C:/Users/Admin/Documents/Fritzing/parts/user/adafruit_6609f8449e258ae7e31b5367b618ff28_1.fzp">
+            <property name="part number" value="Adafruit #2448"/>
+            <views/>
+        </instance>
+        <instance moduleIdRef="Limit Switch_1cd7b2f5231c6c8d0ce5bfcb14528087_8" modelIndex="85473825" path="C:/Users/Admin/Documents/Fritzing/parts/user/Limit Switch_1cd7b2f5231c6c8d0ce5bfcb14528087_8.fzp">
+            <views/>
+        </instance>
+        <instance moduleIdRef="Rotary_Switch_3P3T_89361836e73e19d6fb46aaad7a9eb199_5" modelIndex="85474955" path="C:/Users/Admin/Documents/Fritzing/parts/user/Rotary_Switch_3P3T_89361836e73e19d6fb46aaad7a9eb199_5.fzp">
+            <views/>
+        </instance>
+        <instance moduleIdRef="NKK 3PDT Toggle Switch_25933df52f2a658ecd3ebf2f34a562aa_1" modelIndex="85474957" path="C:/Users/Admin/Documents/Fritzing/parts/user/NKK 3PDT Toggle Switch_25933df52f2a658ecd3ebf2f34a562aa_1.fzp">
+            <views/>
+        </instance>
+        <instance moduleIdRef="b3c6bb7ff75d84be39b3e3bb3023e958" modelIndex="85474962" path="C:/Users/Admin/Documents/Fritzing/parts/user/AT42QT1012_Toggle_switch_Capsense_Breakout__8cc705cc3808b070f1f474050bcaaed1.fzp">
+            <views/>
+        </instance>
+        <instance moduleIdRef="LCD1602-I2C" modelIndex="85475443" path="C:/Users/Admin/Documents/Fritzing/parts/user/LCD1602-I2C_.fzp">
+            <views/>
+        </instance>
+        <instance moduleIdRef="0223_0eb44bbb4c4f50c21567b8c79110a3c3_5" modelIndex="85475479" path="C:/Users/Admin/Documents/Fritzing/parts/user/0223_0eb44bbb4c4f50c21567b8c79110a3c3_5.fzp">
+            <views/>
+        </instance>
+        <instance moduleIdRef="prefix101206_88fb47df2ee932af6b413e36d066aeb3_5" modelIndex="85476165" path="C:/Users/Admin/Documents/Fritzing/parts/user/prefix101206_88fb47df2ee932af6b413e36d066aeb3_5.fzp">
+            <views/>
+        </instance>
+    </instances>
+</module>
