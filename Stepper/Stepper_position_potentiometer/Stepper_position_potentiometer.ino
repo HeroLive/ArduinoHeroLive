@@ -10,7 +10,8 @@
 #include <AccelStepper.h>
 // Define a stepper and the pins it will use
 int stepPin = 2;
-int dirPin = 3;
+int dirPin = 5;
+int en = 8;
 AccelStepper stepper(AccelStepper::DRIVER, stepPin, dirPin);; // Defaults to AccelStepper::FULL4WIRE (4 pins) on 2, 3, 4, 5
 
 // This defines the analog input pin for reading the control voltage
@@ -21,13 +22,17 @@ int analog_in = 0;
 
 void setup()
 {  
+  Serial.begin(9600);
+  pinMode(en,OUTPUT);
+  digitalWrite(en,LOW);
   stepper.setMaxSpeed(1000);
 }
 
 void loop()
 {
   // Read new position
-  analog_in = map(analogRead(ANALOG_IN),0,1023,0,200);
+  analog_in = map(analogRead(ANALOG_IN),0,1023,0,799);
+  Serial.println(analog_in);
   stepper.moveTo(analog_in);
   stepper.setSpeed(100);
   stepper.runSpeedToPosition();
