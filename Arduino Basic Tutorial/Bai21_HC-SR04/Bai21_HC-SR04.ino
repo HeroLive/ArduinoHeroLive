@@ -1,7 +1,7 @@
 #include <Servo.h>
-int echoPin = 43;
-int trigPin = 45;
-int servoPin = 10;
+int echoPin = 11;
+int trigPin = 10;
+int servoPin = 9;
 int duration; //micro second
 float d_cm;
 int pos01=0;

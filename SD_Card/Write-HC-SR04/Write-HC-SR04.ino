@@ -7,8 +7,7 @@
  ** MOSI - pin 11
  ** MISO - pin 12
  ** CLK - pin 13
- ** CS - pin 4 (for MKRZero SD: SDCARD_SS_PIN)
-
+ ** CS - pin 10
   created   Nov 2010
   by David A. Mellis
   modified 9 Apr 2012
@@ -65,7 +64,6 @@ void setup() {
   }
 
   // delete the file:
-
   Serial.println("Removing...");
   SD.remove(fileName);
 
