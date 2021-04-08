@@ -28,7 +28,7 @@ void loop() {
   duration = pulseIn(echoPin,HIGH);
   d_cm = duration * 0.034/2.;
   //servo
-  if(d_cm>=11 & d_cm<=14){
+  if(d_cm>=3 & d_cm<=14){
     myServo.write(pos02);
     delay(200);
   } else {
