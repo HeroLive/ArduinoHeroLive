@@ -35,5 +35,5 @@ void setup()
 void loop()
 {
   Serial.println(digitalRead(bt));
-  //  Blynk.run();  // Commented out for a short time.
+  Blynk.run();  // Commented out for a short time.
 }
