@@ -22,7 +22,7 @@ void loop() {
 
 float get_temp() {
   Vo = analogRead(tempPin);
-  R2 = R1 * (1023.0 / Vo - 1.0);
+  R2 = R1 * (1023.0 / Vo - 1.0); // R2= R1*(Vin/Vout - 1)
   logR2 = log(R2);
   T = (1.0 / (c1 + c2 * logR2 + c3 * logR2 * logR2 * logR2));
   return T - 273.15; //độ C
