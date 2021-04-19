@@ -7,8 +7,8 @@ int stepPinZ = 4;
 int dirPinZ = 7;
 int en = 8;
 #define ANALOG_IN A0
-AccelStepper stepperX(AccelStepper::DRIVER, stepPinX, dirPinX);; // Defaults to AccelStepper::FULL4WIRE (4 pins) on 2, 3, 4, 5
-AccelStepper stepperZ(AccelStepper::DRIVER, stepPinZ, dirPinZ);; // Defaults to AccelStepper::FULL4WIRE (4 pins) on 2, 3, 4, 5
+AccelStepper stepperX(AccelStepper::DRIVER, stepPinX, dirPinX); // Defaults to AccelStepper::FULL4WIRE (4 pins) on 2, 3, 4, 5
+AccelStepper stepperZ(AccelStepper::DRIVER, stepPinZ, dirPinZ); // Defaults to AccelStepper::FULL4WIRE (4 pins) on 2, 3, 4, 5
 
 // Up to 10 steppers can be handled as a group by MultiStepper
 MultiStepper steppers;
