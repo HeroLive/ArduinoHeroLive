@@ -1,3 +1,5 @@
+#include <Servo.h>
+
 #include <Adafruit_NeoPixel.h>
 #ifdef __AVR__
 #include <avr/power.h> // Required for 16 MHz Adafruit Trinket
@@ -11,6 +13,8 @@ Adafruit_NeoPixel ringPixels(ringNUMPIXELS, ringNeo, NEO_GRB + NEO_KHZ800);
 #define barNUMPIXELS 8
 Adafruit_NeoPixel barPixels(barNUMPIXELS, barNeo, NEO_GRB + NEO_KHZ800);
 
+Servo servo1; 
+Servo servo2;
 
 #define STATE_INIT 0
 #define STATE_STARTUP 1
@@ -29,12 +33,16 @@ void setup() {
   Serial.begin(9600);
   ringPixels.begin();
   barPixels.begin();
+  servo1.attach(5);
+  servo2.attach(6);
   pinMode(led, OUTPUT);
   pinMode(bt1, INPUT_PULLUP);
 
   ring_pixels_off();
   bar_pixels_off();
   digitalWrite(led, HIGH);
+  servo1.write(0);
+  servo2.write(0);
   updateState(STATE_STARTUP);
 }
 
@@ -136,9 +144,13 @@ void replay_process_trap() {
 
 void servo_on() {
   Serial.println("servo_on");
+  servo1.write(90);
+  servo2.write(90);
 }
 void servo_off() {
   Serial.println("servo_off");
+  servo1.write(0);
+  servo2.write(0);
 }
 
 void led_blink() {
