@@ -139,8 +139,11 @@ void process_trap() {
 void replay_process_trap() {
   ring_pixels_on("W");
   playAudio(5);
+  delay(3000);
   updateState(STATE_PROCESSTRAP);
 }
+
+////////////////////////////////
 
 void servo_on() {
   Serial.println("servo_on");
@@ -220,8 +223,6 @@ void bar_graph_fill() {
     bar_pixels_on(i);
     delay(100);
   }
-  bar_pixels_off();
-  bar_pixels_on(7);
 }
 
 void playAudio(int track) {
