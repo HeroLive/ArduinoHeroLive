@@ -19,14 +19,12 @@ void setup()
     Serial.println(F("Unable to begin:"));
     Serial.println(F("1.Please recheck the connection!"));
     Serial.println(F("2.Please insert the SD card!"));
-    while (true);
+    while(true);
   }
   Serial.println(F("DFPlayer Mini online."));
-  myDFPlayer.setTimeOut(500); //Set serial communictaion time out 500ms
 
   myDFPlayer.volume(10);  //Set volume value. From 0 to 30
-  //  myDFPlayer.play(1);  //Play the first mp3
-  myDFPlayer.playMp3Folder(1);
+  myDFPlayer.play(1);  //Play the first mp3
 }
 
 void loop()
@@ -43,7 +41,7 @@ void loop()
   }
 }
 
-void printDetail(uint8_t type, int value) {
+void printDetail(uint8_t type, int value){
   switch (type) {
     case TimeOut:
       Serial.println(F("Time Out!"));
