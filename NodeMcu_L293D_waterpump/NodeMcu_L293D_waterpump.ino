@@ -5,9 +5,9 @@
 #define MotorASpeed 5
 #define MotorADir   0 // HIGH --> A+ -> Motor+, A- -> Motor-
 
-char auth[] = "Your token";
-char ssid[] = "Wifi_name";
-char pass[] = "Password";
+char auth[] = "BnpAUdb-lsPhujs_EXeCc7ZMcw4WewXT";
+char ssid[] = "Hero Live";
+char pass[] = "14022020";
 
 void moveControl(int x)
 {
