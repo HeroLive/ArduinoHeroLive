@@ -16,14 +16,14 @@ int nRound = 0;
 void setup()
 {
   Serial.begin(9600);
-  digitalWrite(3, LOW);
+//  digitalWrite(3, LOW);
   pinMode(3, INPUT_PULLUP);
 
   pinMode(stepPin, OUTPUT);
   pinMode(dirPin, OUTPUT);
   pinMode(encoderPin, INPUT_PULLUP);
 
-  attachInterrupt(1, FootSwitchMove, HIGH);
+  attachInterrupt(1, FootSwitchMove, HIGH); // digital 3
 
   lcd.begin(20, 04);
   lcd.setCursor(0, 0);
@@ -75,7 +75,6 @@ void FootSwitchMove()
     delayMicroseconds(delayTime);
     
     if (digitalRead(encoderPin) != encoderStatus && encoderStatus == 0) {
-      nn++;
       Encoder();
     }
     encoderStatus = digitalRead(encoderPin);
