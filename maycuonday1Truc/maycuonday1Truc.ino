@@ -65,8 +65,7 @@ void LoadADC()
 }
 void FootSwitchMove()
 {
-  int encoderStatus = 0;
-  int nn = 0;
+  int encoderStatus = digitalRead(encoderPin);
   Serial.println("Motor running..");
   for (i = 0; i < (RS * a * b * 100); i++)
   {
@@ -77,10 +76,8 @@ void FootSwitchMove()
     
     if (digitalRead(encoderPin) != encoderStatus && encoderStatus == 0) {
       nn++;
-      Serial.println(nn);
       Encoder();
     }
-//    Serial.println(0);
     encoderStatus = digitalRead(encoderPin);
   }
 }
