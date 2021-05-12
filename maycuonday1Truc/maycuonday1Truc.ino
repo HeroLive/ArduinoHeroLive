@@ -17,13 +17,13 @@ int nRound = 0;
 void setup()
 {
   Serial.begin(9600);
-//  digitalWrite(3, LOW);
+  //  digitalWrite(3, LOW);
   pinMode(3, INPUT_PULLUP);
 
   pinMode(stepPin, OUTPUT);
   pinMode(dirPin, OUTPUT);
   pinMode(encoderPin, INPUT_PULLUP);
-  pinMode(holdPin,INPUT);
+  pinMode(holdPin, INPUT);
 
   attachInterrupt(1, FootSwitchMove, HIGH); // digital 3
 
@@ -47,7 +47,7 @@ void setup()
 }
 void loop()
 {
-  
+
 }
 void LoadADC()
 {
@@ -62,11 +62,6 @@ void LoadADC()
   lcd.print(RS);
   lcd.setCursor(11, 3);
   lcd.print(Speed);
-  //  Serial.print(analogRead(A1));
-  //  Serial.print(" ");
-  //  Serial.println(Speed);
-  Serial.println(digitalRead(holdPin));
-  delay(500);
 }
 void FootSwitchMove()
 {
@@ -74,11 +69,14 @@ void FootSwitchMove()
   Serial.println("Motor running..");
   for (i = 0; i < (RS * a * b * 100); i++)
   {
+    while (digitalRead(holdPin) == HIGH) {
+      Serial.println("holding..");
+    }
     digitalWrite(stepPin, HIGH);
     delayMicroseconds(delayTime);
     digitalWrite(stepPin, LOW);
     delayMicroseconds(delayTime);
-    
+
     if (digitalRead(encoderPin) != encoderStatus && encoderStatus == 0) {
       Encoder();
     }
@@ -87,7 +85,7 @@ void FootSwitchMove()
 }
 
 void Encoder() {
-  Serial.println("Ecoder");
+  Serial.println("Encoder");
   countRound++;
   if (countRound > 4) {
     countRound = 0;
