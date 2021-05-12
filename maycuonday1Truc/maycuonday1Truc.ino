@@ -6,6 +6,7 @@ LiquidCrystal lcd(13, 12, 11, 10, 9, 8);
 const int stepPin = A4;
 const int dirPin = A5;
 int encoderPin = 2;
+int holdPin = 6;
 unsigned long Speed = 0, RS = 0;
 double delayTime;
 long i;
@@ -22,6 +23,7 @@ void setup()
   pinMode(stepPin, OUTPUT);
   pinMode(dirPin, OUTPUT);
   pinMode(encoderPin, INPUT_PULLUP);
+  pinMode(holdPin,INPUT);
 
   attachInterrupt(1, FootSwitchMove, HIGH); // digital 3
 
@@ -45,6 +47,7 @@ void setup()
 }
 void loop()
 {
+  
 }
 void LoadADC()
 {
@@ -62,6 +65,8 @@ void LoadADC()
   //  Serial.print(analogRead(A1));
   //  Serial.print(" ");
   //  Serial.println(Speed);
+  Serial.println(digitalRead(holdPin));
+  delay(500);
 }
 void FootSwitchMove()
 {
