@@ -1,12 +1,26 @@
 #include <Wire.h>
 #include <LiquidCrystal_I2C.h>
 LiquidCrystal_I2C lcd(0x27, 16, 2); // or 0x3F
+#include <AccelStepper.h>
+
+// Define a stepper and the pins it will use
+int stepPinX = 9;
+int dirPinX = 10;
+int stepPinY = 11;
+int dirPinY = 12;
+int stepPinZ = 4;
+int dirPinZ = 7;
+int en = 8;
+
+AccelStepper stepperX(AccelStepper::DRIVER, stepPinX, dirPinX);
+AccelStepper stepperY(AccelStepper::DRIVER, stepPinY, dirPinY);
+AccelStepper stepperZ(AccelStepper::DRIVER, stepPinZ, dirPinZ);
 
 
 //encoder
 static int pinA = 2; // Our first hardware interrupt pin is digital pin 2
 static int pinB = 3; // Our second hardware interrupt pin is digital pin 3
-static int enSW = 4; //The select switch for our encoder.
+static int enSW = 5; //The select switch for our encoder.
 
 volatile byte aFlag = 0; // let's us know when we're expecting a rising edge on pinA to signal that the encoder has arrived at a detent
 volatile byte bFlag = 0; // let's us know when we're expecting a rising edge on pinB to signal that the encoder has arrived at a detent (opposite direction to when aFlag is set)
@@ -15,9 +29,13 @@ long oldEncPos = 0; //stores the last encoder position value so we can compare t
 volatile byte reading = 0; //somewhere to store the direct values we read from our interrupt pins before checking to see if we have moved a whole detent
 //---------
 int menuCnt = 0;
-int menuLength = 6;
-String menu[] = {"First Menu", "Second Menu", "Third Menu", "Fourth Menu", "Fifth Menu", "Sixth Menu"};
-int menuValue[] = {1, 2, 3, 4, 5, 6};
+int menuLength = 3;
+String menu[] = {"X", "Y", "Z"};
+int menuValue[] = {1, 2, 3};
+long positions[] = {0, 0, 0};
+
+long microStep = 1;
+long fullStep = 200;
 
 
 void setup() {
@@ -29,12 +47,15 @@ void setup() {
   attachInterrupt(0, PinA, RISING); // set an interrupt on PinA, looking for a rising edge signal and executing the "PinA" Interrupt Service Routine (below)
   attachInterrupt(1, PinB, RISING);
   //
+  pinMode(en, OUTPUT);
+  digitalWrite(en, LOW);
+  //
   lcd.init();
   lcd.backlight();
   lcd.setCursor(0, 0); //frint from column 3, row 0
-  lcd.print(" ** Hero Live **");
+  lcd.print("** Hero Live **");
   lcd.setCursor(0, 1);
-  lcd.print(" >> Menu Demo <<");
+  lcd.print("Stepper Control");
   delay(3000);
   lcd.clear();
 
@@ -52,15 +73,33 @@ void loop() {
     if (menuCnt >= menuLength) {
       menuCnt = 0;
     } else if (menuCnt < 0) {
-      menuCnt = menuLength-1;
+      menuCnt = menuLength - 1;
     }
     oldEncPos = encoderPos;
     updateMenu(menuCnt);
     delay(100);
   }
   if (digitalRead(enSW) == 0) {
+    long t = millis();
     while (digitalRead(enSW) == 0);
-    settingValue(menuCnt);
+    if ((millis() - t) < 1000) {
+      settingValue(menuCnt);
+    } else {
+      Serial.println("long press");
+      switch (menuCnt) {
+        case 0:
+          runStepper(stepperX);
+          break;
+        case 1:
+          runStepper(stepperY);
+          break;
+        case 2:
+          runStepper(stepperZ);
+          break;
+      }
+
+    }
+
   }
 }
 
@@ -73,9 +112,9 @@ void updateMenu(int menuSelect) {
       select = 0;
     }
   }
-  Serial.print(menuSelect);
-  Serial.print("--");
-  Serial.println(select);
+  //  Serial.print(menuSelect);
+  //  Serial.print("--");
+  //  Serial.println(select);
   switch (select) {
     case 2:
       lcd.clear();
@@ -83,25 +122,33 @@ void updateMenu(int menuSelect) {
       lcd.print(">");
       lcd.setCursor(1, 0); //frint from column 1, row 0
       lcd.print(menu[menuSelect]);
-      lcd.setCursor(16 - numDigit(menuValue[menuSelect]), 0);
+      lcd.setCursor(9 - numDigit(menuValue[menuSelect]), 0);
       lcd.print(menuValue[menuSelect]);
+      lcd.setCursor(16 - numDigit(positions[menuSelect]), 0);
+      lcd.print(positions[menuSelect]);
       lcd.setCursor(1, 1);
       lcd.print(menu[menuSelect + 1]);
-      lcd.setCursor(16 - numDigit(menuValue[menuSelect + 1]), 1);
+      lcd.setCursor(9 - numDigit(menuValue[menuSelect + 1]), 1);
       lcd.print(menuValue[menuSelect + 1]);
+      lcd.setCursor(16 - numDigit(positions[menuSelect + 1]), 1);
+      lcd.print(positions[menuSelect + 1]);
       break;
     case 1:
       lcd.clear();
       lcd.setCursor(1, 0); //frint from column 1, row 0
       lcd.print(menu[menuSelect - 1]);
-      lcd.setCursor(16 - numDigit(menuValue[menuSelect - 1]), 0);
+      lcd.setCursor(9 - numDigit(menuValue[menuSelect - 1]), 0);
       lcd.print(menuValue[menuSelect - 1]);
+      lcd.setCursor(16 - numDigit(positions[menuSelect - 1]), 0);
+      lcd.print(positions[menuSelect - 1]);
       lcd.setCursor(0, 1);
       lcd.print(">");
       lcd.setCursor(1, 1);
       lcd.print(menu[menuSelect]);
-      lcd.setCursor(16 - numDigit(menuValue[menuSelect]), 1);
+      lcd.setCursor(9 - numDigit(menuValue[menuSelect]), 1);
       lcd.print(menuValue[menuSelect]);
+      lcd.setCursor(16 - numDigit(positions[menuSelect]), 1);
+      lcd.print(positions[menuSelect]);
       break;
     case 0:
       lcd.clear();
@@ -109,8 +156,10 @@ void updateMenu(int menuSelect) {
       lcd.print(">");
       lcd.setCursor(1, 0); //frint from column 1, row 0
       lcd.print(menu[menuSelect]);
-      lcd.setCursor(16 - numDigit(menuValue[menuSelect]), 0);
+      lcd.setCursor(9 - numDigit(menuValue[menuSelect]), 0);
       lcd.print(menuValue[menuSelect]);
+      lcd.setCursor(16 - numDigit(positions[menuSelect]), 0);
+      lcd.print(positions[menuSelect]);
       break;
   }
 }
@@ -167,7 +216,7 @@ void PinB() {
     bFlag = 0; //reset flags for the next turn
     aFlag = 0; //reset flags for the next turn
   }
-  else if (reading == B00001000) aFlag = 1; //signal that we're expecting pinA to signal the transition to detent from free rotation
+  else if (reading == B00001000) aFlag = 1; //signal that we're expecting pinA to signal the transition to detentom  rotation
   sei(); //restart interrupts
 }
 
@@ -185,4 +234,16 @@ int numDigit(int n) {
     n = n / 10;
   }
   return count;
+}
+//------------------------
+void runStepper(AccelStepper stepper)
+{
+  long newPositions = menuValue[menuCnt] * microStep * fullStep;
+  long currentPositions = positions[menuCnt]* microStep * fullStep;
+  stepper.setCurrentPosition(currentPositions);
+  stepper.setMaxSpeed(500);
+  stepper.setAcceleration(100);
+  stepper.runToNewPosition(newPositions);
+  positions[menuCnt] = stepper.currentPosition() / (microStep * fullStep);
+  updateMenu(menuCnt);
 }
