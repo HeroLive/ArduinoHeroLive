@@ -49,7 +49,7 @@ void moveXZ(long nStepX, int stepPinX, long nStepZ, int stepPinZ) {
 
   ratio_max_min = nStepMax / nStepMin;
 
-  for (int i = 1 ; i <= nStepMax ; i = i + 1) {
+  for (long i = 1 ; i <= nStepMax ; i = i + 1) {
     current_axis_min = i / ratio_max_min;
 
     if (current_axis_min - steps_axis_min >= 1) {

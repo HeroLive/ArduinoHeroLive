@@ -1,9 +1,6 @@
 #include <Wire.h>
 #include <LiquidCrystal_I2C.h>
 #include <math.h>
-#include <AccelStepper.h>
-#include <MultiStepper.h>
-
 
 //driver for the axis 1 - X
 #define PUL1_PIN 2
@@ -15,6 +12,7 @@
 #define DOWN A0  //Reset/Abort
 #define MODE A1  //Feed Hold
 #define UP A2   // Start/Resume
+boolean DIR2 = LOW;
 
 #define STATE_STARTUP 0
 #define STATE_DIAMETER 2
@@ -24,9 +22,6 @@
 #define STATE_MOVING 6
 
 LiquidCrystal_I2C lcd(0x27, 16, 2); // or 0x3F
-AccelStepper stepper1(AccelStepper::DRIVER, PUL1_PIN, DIR1_PIN);
-AccelStepper stepper2(AccelStepper::DRIVER, PUL2_PIN, DIR2_PIN);
-MultiStepper steppers;
 
 byte currentState = STATE_STARTUP;
 unsigned long LastStateChangeTime;
@@ -42,7 +37,8 @@ float diameter = 0.1; //mm
 float L_rolling = 2 ; //mm
 float PercentSpeed = 80; //%
 float N_rolling = L_rolling / diameter;
-float positions[2] = {0, 0};  //X: rolling(round), Y: left-right (mm)
+float positions[2] = {0, -L_rolling};  //X: rolling(round), Y: left-right (mm)
+float N_display = 0;
 float curSpeed = fullSpeed * PercentSpeed / 100;
 
 void setup() {
@@ -55,9 +51,7 @@ void setup() {
   pinMode(DIR2_PIN, OUTPUT);
   pinMode(EN_PIN, OUTPUT);
   digitalWrite(EN_PIN, LOW);
-  //
-  steppers.addStepper(stepper1);
-  steppers.addStepper(stepper2);
+  digitalWrite(DIR1_PIN, HIGH);
   //
   lcd.init();
   lcd.backlight();
@@ -65,7 +59,7 @@ void setup() {
   lcd.print("** Hero Live **");
   lcd.setCursor(0, 1);
   lcd.print("  May quan day  ");
-//  delay(3000);
+  //  delay(3000);
   lcd.clear();
 
 }
@@ -76,8 +70,8 @@ void loop() {
   //  Serial.print(positions[0]);
   //  Serial.print(" ");
   //  Serial.println(positions[1]);
-    updateState(currentState);
-    updateLCD();
+  updateState(currentState);
+  updateLCD();
 }
 
 void updateState(byte aState) {
@@ -99,7 +93,6 @@ void updateState(byte aState) {
       if (analogRead(MODE) > 500) {
         currentState = STATE_DIAMETER;
         while (analogRead(MODE) > 500);
-        Serial.println(N_rolling);
       }
       break;
     case STATE_DIAMETER:
@@ -117,7 +110,8 @@ void updateState(byte aState) {
       if (analogRead(MODE) > 500) {
         currentState = STATE_WAITMOVE;
         while (analogRead(MODE) > 500);
-        curSpeed = fullSpeed * PercentSpeed / 100;
+        curSpeed = map(PercentSpeed, 10, 100, 200, 10); 
+        Serial.println(curSpeed);
       }
       break;
     case STATE_WAITMOVE:
@@ -132,43 +126,62 @@ void updateState(byte aState) {
       }
       if (analogRead(DOWN) > 500) {
         while (analogRead(DOWN) > 500);
-        positions[0] = 0;
-        positions[1] = 0;
-        stepper1.setCurrentPosition(0);
-        stepper2.setCurrentPosition(0);
+        positions[1] = -L_rolling;
+        N_display = 0;
+        step2_side = 'L';
       }
       break;
     case STATE_MOVING:
       Serial.println("STATE_MOVING");
-      if (positions[1] != 0) {
-        positions[1] = 0;
-        step2_side = 'L';
-      } else {
+      if (positions[1] < 0) {
         positions[1] = L_rolling;
         step2_side = 'R';
+        DIR2 = HIGH;
+      } else {
+        positions[1] = -L_rolling;
+        step2_side = 'L';
+        DIR2 = LOW;
       }
-      positions[0] = positions[0] + N_rolling;
+      //      positions[0] = positions[0] + N_rolling;
+      positions[0] = N_rolling;
       runSteppers();
       currentState = STATE_WAITMOVE;
       break;
   }
   //  currentState = aState;
 }
+void move12(long nStep[2]) {
+  float nStepMax = nStep[0];
+  float nStepMin = nStep[1];
+  float ratio_max_min = nStepMax / nStepMin;
+  long cnt = 0;
+  float curCnt = 0;
+  for (long i = 1 ; i <= nStepMax ; i = i + 1) {
+    curCnt = i / (nStepMax / nStepMin);
+    if (curCnt - cnt >= 1) {
+      digitalWrite(PUL2_PIN, HIGH);
+      cnt++;
+    }
 
+    digitalWrite(PUL1_PIN, HIGH);
+    delayMicroseconds(curSpeed);
+
+    digitalWrite(PUL1_PIN, LOW);
+    digitalWrite(PUL2_PIN, LOW);
+    delayMicroseconds(curSpeed);
+  }
+  N_display = (N_display + nStepMax / (360 * microStep[0] / angleStep[0]));
+}
 void runSteppers()
 {
   Serial.print("Move to ");
-  Serial.print(positions[0]);
+  Serial.print(N_display + positions[0]);
   Serial.print(" ");
   Serial.println(positions[1]);
-  stepper1.setMaxSpeed(curSpeed);
-  stepper2.setMaxSpeed(curSpeed);
+  digitalWrite(DIR2_PIN, DIR2);
   steps[0] = positions[0] * 360 * microStep[0] / angleStep[0];
-  steps[1] = positions[1] * disPerRound * 360 * microStep[1] / angleStep[1];
-  if (EN_PIN) {
-    steppers.moveTo(steps);
-    steppers.runSpeedToPosition();
-  }
+  steps[1] = abs(positions[1]) * disPerRound * 360 * microStep[1] / angleStep[1];
+  move12(steps);
 }
 
 float ajustValue(byte mode) {
@@ -192,7 +205,7 @@ float ajustValue(byte mode) {
       return diameter > 0.1 ? diameter : 0.1;
       break;
     case STATE_SPEED:
-      PercentSpeed = PercentSpeed + 10 * count;
+      PercentSpeed = PercentSpeed + 1 * count;
       if (PercentSpeed < 10) {
         PercentSpeed = 10;
       } else if (PercentSpeed > 100) {
@@ -252,7 +265,7 @@ void updateLCD() {
   lcd.setCursor(7, 1);
   lcd.print("V");
   lcd.print(v_);
-  lcd.print(positions[0], 1);
+  lcd.print(N_display, 1);
   lcd.print("     ");
   lcd.setCursor(15, 1);
   lcd.print(m_);
