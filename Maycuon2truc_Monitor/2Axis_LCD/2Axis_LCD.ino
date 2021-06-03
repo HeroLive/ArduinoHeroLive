@@ -36,14 +36,14 @@ long steps[2] = {0, 0};
 int microStep[2] = {16, 16};
 float angleStep[2] = {1.8, 1.8};
 float disPerRound = 0.5; // mm/round
-float fullSpeed = microStep[0] * 500;
+float fullSpeed = microStep[0] * 1000;
 
 float diameter = 0.1; //mm
 float L_rolling = 2 ; //mm
-float PercentSpeed = 40; //%
+float PercentSpeed = 80; //%
 float N_rolling = L_rolling / diameter;
 float positions[2] = {0, 0};  //X: rolling(round), Y: left-right (mm)
-long curSpeed = fullSpeed * PercentSpeed / 100;
+float curSpeed = fullSpeed * PercentSpeed / 100;
 
 void setup() {
   // put your setup code here, to run once:
@@ -65,19 +65,19 @@ void setup() {
   lcd.print("** Hero Live **");
   lcd.setCursor(0, 1);
   lcd.print("  May quan day  ");
-  delay(3000);
+//  delay(3000);
   lcd.clear();
 
 }
 
 void loop() {
-//  delay(200);
-//  Serial.print(" : ");
-//  Serial.print(positions[0]);
-//  Serial.print(" ");
-//  Serial.println(positions[1]);
-  updateState(currentState);
-  updateLCD();
+  //  delay(200);
+  //  Serial.print(" : ");
+  //  Serial.print(positions[0]);
+  //  Serial.print(" ");
+  //  Serial.println(positions[1]);
+    updateState(currentState);
+    updateLCD();
 }
 
 void updateState(byte aState) {
@@ -94,16 +94,16 @@ void updateState(byte aState) {
       currentState = STATE_LENGTH;
       break;
     case STATE_LENGTH:
-      Serial.println("STATE_LENGTH");
+      //      Serial.println("STATE_LENGTH");
       L_rolling = ajustValue(STATE_LENGTH);
       if (analogRead(MODE) > 500) {
         currentState = STATE_DIAMETER;
-        while (analogRead(MODE) > 500);        
+        while (analogRead(MODE) > 500);
         Serial.println(N_rolling);
       }
       break;
     case STATE_DIAMETER:
-      Serial.println("STATE_DIAMETER");
+      //      Serial.println("STATE_DIAMETER");
       diameter = ajustValue(STATE_DIAMETER);
       if (analogRead(MODE) > 500) {
         currentState = STATE_SPEED;
@@ -112,7 +112,7 @@ void updateState(byte aState) {
       }
       break;
     case STATE_SPEED:
-      Serial.println("STATE_SPEED");
+      //      Serial.println("STATE_SPEED");
       PercentSpeed = ajustValue(STATE_SPEED);
       if (analogRead(MODE) > 500) {
         currentState = STATE_WAITMOVE;
@@ -121,7 +121,7 @@ void updateState(byte aState) {
       }
       break;
     case STATE_WAITMOVE:
-      Serial.println("STATE_WAITMOVE");
+      //      Serial.println("STATE_WAITMOVE");
       if (analogRead(MODE) > 500) {
         currentState = STATE_STARTUP;
         while (analogRead(MODE) > 500);
@@ -182,7 +182,7 @@ float ajustValue(byte mode) {
   }
   switch (mode)
   {
-    
+
     case STATE_LENGTH:
       L_rolling = L_rolling + count;
       return L_rolling > 1 ? L_rolling : 1;
@@ -216,7 +216,7 @@ void updateLCD() {
 
   if ((millis() * 5 / 1000) % 2 == 0) {
     switch (currentState)
-    {      
+    {
       case STATE_LENGTH:
         l_ = ' ';
         break;
@@ -235,13 +235,13 @@ void updateLCD() {
   lcd.print("L");
   lcd.print(l_);
   lcd.print(L_rolling, 0);
-  lcd.print("mm");
+  lcd.print("m");
   lcd.print(' ');
-  lcd.setCursor(8, 0); //frint from column 3, row 0
+  lcd.setCursor(7, 0); //frint from column 3, row 0
   lcd.print("D");
   lcd.print(d_);
   lcd.print(diameter, 2);
-  lcd.print("mm");
+  lcd.print("m");
 
   lcd.setCursor(0, 1);
   lcd.print("S");
@@ -249,10 +249,10 @@ void updateLCD() {
   lcd.print(PercentSpeed, 0);
   lcd.print('%');
   lcd.print(' ');
-  lcd.setCursor(8, 1);
+  lcd.setCursor(7, 1);
   lcd.print("V");
   lcd.print(v_);
-  lcd.print(positions[0], 0);
+  lcd.print(positions[0], 1);
   lcd.print("     ");
   lcd.setCursor(15, 1);
   lcd.print(m_);
