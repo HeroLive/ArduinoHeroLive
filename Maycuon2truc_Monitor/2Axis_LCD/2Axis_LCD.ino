@@ -91,7 +91,7 @@ void updateState(byte aState) {
   switch (aState)
   {
     case STATE_STARTUP:
-      Serial.println("STATE_STARTUP");
+      //      Serial.println("STATE_STARTUP");
       //      currentState = STATE_LENGTH;
       digitalWrite(EN1_PIN, HIGH);
       digitalWrite(EN2_PIN, HIGH);
@@ -100,6 +100,7 @@ void updateState(byte aState) {
         while (analogRead(MODE) > 500);
         digitalWrite(EN1_PIN, LOW);
         digitalWrite(EN2_PIN, LOW);
+        lcd.clear();
       }
       break;
     case STATE_LENGTH:
@@ -185,8 +186,17 @@ void move12(long nStep[2]) {
     digitalWrite(PUL2_PIN, LOW);
     delayMicroseconds(curSpeed);
     if (analogRead(STOP) > 500) {
-      while (analogRead(STOP) > 500){
-        Serial.println("PAUSED");
+      while (analogRead(STOP) > 500);
+      Serial.println("PAUSED");
+      while (1) {
+        if (analogRead(STOP) > 500) {
+          long t = millis();
+          while (analogRead(STOP) > 500);
+          if (millis() - t > 2000) {
+            i = nStepMax + 1;
+          }
+          break;
+        }
       }
     }
   }
@@ -243,13 +253,31 @@ void updateLCD() {
   char v_ = ':';
   char m_ = step2_side;
 
-  if (currentState == STATE_MOVING) {
-    m_ = '#';
+  switch (currentState)
+  {
+    case STATE_STARTUP:
+      m_ = 'D';
+      break;
+    case STATE_LENGTH:
+      m_ = 'E';
+      break;
+    case STATE_DIAMETER:
+      m_ = 'E';
+      break;
+    case STATE_SPEED:
+      m_ = 'E';
+      break;
+    case STATE_MOVING:
+      m_ = '#';
+      break;
   }
 
   if ((millis() * 5 / 1000) % 2 == 0) {
     switch (currentState)
     {
+      case STATE_STARTUP:
+        m_ = ' ';
+        break;
       case STATE_LENGTH:
         l_ = ' ';
         break;
