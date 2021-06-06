@@ -142,9 +142,11 @@ void loop() {
   delay(100);
 
   //
+  Serial.print(blueColorredColor);
+  Serial.print(" ");
   Serial.print(redColor);
-  Serial.print(greenColor);
-  Serial.print(blueColor);
+  Serial.print(" ");
+  Serial.println(greenColor);
   // Checks the current detected color and prints
   // a message in the serial monitor
 //  if (redColor < greenColor && redColor < blueColor) {
