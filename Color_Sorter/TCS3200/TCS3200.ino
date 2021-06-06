@@ -115,8 +115,8 @@ void loop() {
   // Reading the output frequency
   redColor = pulseIn(sensorOut, LOW);
   // Printing the RED (R) value
-  Serial.print("R = ");
-  Serial.print(redColor);
+//  Serial.print("R = ");
+//  Serial.print(redColor);
   delay(100);
 
   // Setting GREEN (G) filtered photodiodes to be read
@@ -126,8 +126,8 @@ void loop() {
   // Reading the output frequency
   greenColor = pulseIn(sensorOut, LOW);
   // Printing the GREEN (G) value
-  Serial.print(" G = ");
-  Serial.print(greenColor);
+//  Serial.print(" G = ");
+//  Serial.print(greenColor);
   delay(100);
 
   // Setting BLUE (B) filtered photodiodes to be read
@@ -137,19 +137,23 @@ void loop() {
   blueColor = pulseIn(sensorOut, LOW);
 
   // Printing the BLUE (B) value
-  Serial.print(" B = ");
-  Serial.print(blueColor);
+//  Serial.print(" B = ");
+//  Serial.print(blueColor);
   delay(100);
 
+  //
+  Serial.print(redColor);
+  Serial.print(greenColor);
+  Serial.print(blueColor);
   // Checks the current detected color and prints
   // a message in the serial monitor
-  if (redColor > greenColor && redColor > blueColor) {
-    Serial.println(" - RED detected!");
-  }
-  if (greenColor > redColor && greenColor > blueColor) {
-    Serial.println(" - GREEN detected!");
-  }
-  if (blueColor > redColor && blueColor > greenColor) {
-    Serial.println(" - BLUE detected!");
-  }
+//  if (redColor < greenColor && redColor < blueColor) {
+//    Serial.println(" - RED detected!");
+//  }
+//  if (greenColor < redColor && greenColor < blueColor) {
+//    Serial.println(" - GREEN detected!");
+//  }
+//  if (blueColor < redColor && blueColor < greenColor) {
+//    Serial.println(" - BLUE detected!");
+//  }
 }
