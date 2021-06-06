@@ -3,15 +3,17 @@
 #include <math.h>
 
 //driver for the axis 1 - X
-#define PUL1_PIN 2
-#define DIR1_PIN 5
+#define PUL1_PIN 5
+#define DIR1_PIN 6
+#define EN1_PIN 7
 //driver for the axis 2 - Y
-#define PUL2_PIN 3
-#define DIR2_PIN 6
-#define EN_PIN 8
-#define DOWN A0  //Reset/Abort
-#define MODE A1  //Feed Hold
-#define UP A2   // Start/Resume
+#define PUL2_PIN 9
+#define DIR2_PIN 10
+#define EN2_PIN 11
+#define STOP A0
+#define DOWN A1
+#define MODE A2
+#define UP A3
 boolean DIR2 = LOW;
 
 #define STATE_STARTUP 0
@@ -30,12 +32,12 @@ char step2_side = 'L';
 long steps[2] = {0, 0};
 int microStep[2] = {16, 16};
 float angleStep[2] = {1.8, 1.8};
-float disPerRound = 0.5; // mm/round
+float disPerRound = 0.125; // round/mm
 float fullSpeed = microStep[0] * 1000;
 
-float diameter = 0.1; //mm
-float L_rolling = 2 ; //mm
-float PercentSpeed = 80; //%
+float diameter = 0.5; //mm
+float L_rolling = 10 ; //mm
+float PercentSpeed = 10; //%
 float N_rolling = L_rolling / diameter;
 float positions[2] = {0, -L_rolling};  //X: rolling(round), Y: left-right (mm)
 float N_display = 0;
@@ -49,9 +51,11 @@ void setup() {
   pinMode(DIR1_PIN, OUTPUT);
   pinMode(PUL2_PIN, OUTPUT);
   pinMode(DIR2_PIN, OUTPUT);
-  pinMode(EN_PIN, OUTPUT);
-  digitalWrite(EN_PIN, LOW);
-  digitalWrite(DIR1_PIN, HIGH);
+  pinMode(EN1_PIN, OUTPUT);
+  pinMode(EN2_PIN, OUTPUT);
+  digitalWrite(EN1_PIN, LOW);
+  digitalWrite(EN2_PIN, LOW);
+  digitalWrite(DIR1_PIN, LOW); //reverse clock
   //
   lcd.init();
   lcd.backlight();
@@ -66,10 +70,13 @@ void setup() {
 
 void loop() {
   //  delay(200);
-  //  Serial.print(" : ");
-  //  Serial.print(positions[0]);
+  //  Serial.print(analogRead(STOP));
   //  Serial.print(" ");
-  //  Serial.println(positions[1]);
+  //  Serial.print(analogRead(DOWN));
+  //  Serial.print(" ");
+  //  Serial.print(analogRead(MODE));
+  //  Serial.print(" ");
+  //  Serial.println(analogRead(UP));
   updateState(currentState);
   updateLCD();
 }
@@ -85,7 +92,15 @@ void updateState(byte aState) {
   {
     case STATE_STARTUP:
       Serial.println("STATE_STARTUP");
-      currentState = STATE_LENGTH;
+      //      currentState = STATE_LENGTH;
+      digitalWrite(EN1_PIN, HIGH);
+      digitalWrite(EN2_PIN, HIGH);
+      if (analogRead(MODE) > 500) {
+        currentState = STATE_LENGTH;
+        while (analogRead(MODE) > 500);
+        digitalWrite(EN1_PIN, LOW);
+        digitalWrite(EN2_PIN, LOW);
+      }
       break;
     case STATE_LENGTH:
       //      Serial.println("STATE_LENGTH");
@@ -110,7 +125,7 @@ void updateState(byte aState) {
       if (analogRead(MODE) > 500) {
         currentState = STATE_WAITMOVE;
         while (analogRead(MODE) > 500);
-        curSpeed = map(PercentSpeed, 10, 100, 200, 10); 
+        curSpeed = map(PercentSpeed, 10, 100, 200, 32);
         Serial.println(curSpeed);
       }
       break;
@@ -136,11 +151,11 @@ void updateState(byte aState) {
       if (positions[1] < 0) {
         positions[1] = L_rolling;
         step2_side = 'R';
-        DIR2 = HIGH;
+        DIR2 = LOW;
       } else {
         positions[1] = -L_rolling;
         step2_side = 'L';
-        DIR2 = LOW;
+        DIR2 = HIGH;
       }
       //      positions[0] = positions[0] + N_rolling;
       positions[0] = N_rolling;
@@ -169,6 +184,11 @@ void move12(long nStep[2]) {
     digitalWrite(PUL1_PIN, LOW);
     digitalWrite(PUL2_PIN, LOW);
     delayMicroseconds(curSpeed);
+    if (analogRead(STOP) > 500) {
+      while (analogRead(STOP) > 500){
+        Serial.println("PAUSED");
+      }
+    }
   }
   N_display = (N_display + nStepMax / (360 * microStep[0] / angleStep[0]));
 }
