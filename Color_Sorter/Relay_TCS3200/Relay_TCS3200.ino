@@ -85,19 +85,17 @@ void loop() {
     if (redColor < greenColor && redColor < blueColor) {
       Serial.println(" - RED detected!");
       digitalWrite(R_Xilanh, HIGH);
-      delay(100);
+      delay(400);
       digitalWrite(R_Xilanh, LOW);
     }
     if (greenColor < redColor && greenColor < blueColor) {
       Serial.println(" - GREEN detected!");
       digitalWrite(G_Xilanh, HIGH);
-      delay(100);
+      delay(400);
       digitalWrite(G_Xilanh, LOW);
     }
     if (blueColor < redColor && blueColor < greenColor) {
       Serial.println(" - BLUE detected!");
     }
   }
-
-  delay(5000);
 }
