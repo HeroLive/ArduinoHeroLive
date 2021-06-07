@@ -2,12 +2,11 @@
 #define G_IR 3
 #define R_Xilanh 11
 #define G_Xilanh 12
-int R_IR_status = 1;
-int G_IR_status = 1;
 void setup()
 {
-  Serial.begin(9600);z
-//  pinMode(IR_01, INPUT);
+  Serial.begin(9600);
+  pinMode(R_IR, INPUT);
+  pinMode(G_IR, INPUT);
   pinMode(R_Xilanh, OUTPUT);
   pinMode(G_Xilanh, OUTPUT);
   digitalWrite(R_Xilanh, LOW);
@@ -17,21 +16,19 @@ void setup()
 
 void loop()
 {
-  R_IR_status = digitalRead(R_IR);
-  G_IR_status = digitalRead(G_IR);
-  Serial.println(R_IR_status);
-  if (R_IR_status == 0) {
-    while (R_IR_status == 0){
-      R_IR_status = digitalRead(R_IR);
+  Serial.print(digitalRead(R_IR));
+  Serial.print(" ");
+  Serial.println(digitalRead(G_IR));
+  if (digitalRead(R_IR) == 0) {
+    while (digitalRead(R_IR) == 0){
       Serial.println("Red_IR");
     }
     digitalWrite(R_Xilanh, HIGH);
     delay(400);
     digitalWrite(R_Xilanh,LOW);
   }
-  if (G_IR_status == 0) {
-    while (G_IR_status == 0){
-      G_IR_status = digitalRead(G_IR);
+  if (digitalRead(G_IR) == 0) {
+    while (digitalRead(G_IR) == 0){
       Serial.println("Green_IR");
     }
     digitalWrite(G_Xilanh, HIGH);
