@@ -79,6 +79,7 @@ void loop() {
   Serial.println(greenColor);
   // Checks the current detected color and prints
   // a message in the serial monitor
+  /******/
   if (redColor > 300 && greenColor > 300 && blueColor > 300) {
     Serial.println("Bang tai");
   } else {
@@ -98,4 +99,5 @@ void loop() {
       Serial.println(" - BLUE detected!");
     }
   }
+  /*****/
 }
