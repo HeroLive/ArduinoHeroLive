@@ -49,7 +49,7 @@ void setup()
 
 void loop()
 {
-//  getColor();
+  getColor();
   Serial.print(R_cnt);
   Serial.print(" ");
   Serial.print(G_cnt);
