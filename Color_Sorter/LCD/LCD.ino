@@ -3,6 +3,7 @@
 #include <math.h>
 
 LiquidCrystal_I2C lcd(0x27, 16, 2); // or 0x3F
+//LiquidCrystal_I2C lcd(0x27, 20, 4);
 
 void setup() {
   // put your setup code here, to run once:

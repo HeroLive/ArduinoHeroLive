@@ -4,7 +4,7 @@
 void setup() 
 {
   Serial.begin(9600);
-  pinMode(IR_01,INPUT_PULLUP);
+  pinMode(IR_01,INPUT);
 }
 
 void loop() 
