@@ -20,8 +20,9 @@ boolean DIR2 = LOW;
 #define STATE_DIAMETER 2
 #define STATE_LENGTH 3
 #define STATE_SPEED 4
-#define STATE_WAITMOVE 5
-#define STATE_MOVING 6
+#define STATE_MANUALMOVING 5
+#define STATE_WAITMOVE 6
+#define STATE_MOVING 7
 
 LiquidCrystal_I2C lcd(0x27, 16, 2); // or 0x3F
 
@@ -124,11 +125,15 @@ void updateState(byte aState) {
       //      Serial.println("STATE_SPEED");
       PercentSpeed = ajustValue(STATE_SPEED);
       if (analogRead(MODE) > 500) {
-        currentState = STATE_WAITMOVE;
+        currentState = STATE_MANUALMOVING;
         while (analogRead(MODE) > 500);
         curSpeed = map(PercentSpeed, 10, 100, 200, 32);
         Serial.println(curSpeed);
       }
+      break;
+    case STATE_MANUALMOVING:
+      Serial.println("STATE_MANUALMOVING");
+      manualControl();
       break;
     case STATE_WAITMOVE:
       //      Serial.println("STATE_WAITMOVE");
@@ -162,6 +167,7 @@ void updateState(byte aState) {
       positions[0] = N_rolling;
       runSteppers();
       currentState = STATE_WAITMOVE;
+      lcd.clear();
       break;
   }
   //  currentState = aState;
@@ -317,4 +323,91 @@ void updateLCD() {
   lcd.print("     ");
   lcd.setCursor(15, 1);
   lcd.print(m_);
+}
+void manualControl() {
+  int m = 1;
+  updateMLCD(0, ' ');
+  while (1) {
+    if (analogRead(MODE) > 500) {
+      currentState = STATE_WAITMOVE;
+      lcd.clear();
+      while (analogRead(MODE) > 500);
+      break;
+    }
+    if (analogRead(STOP) > 500) {
+      while (analogRead(STOP) > 500);
+      if (m == 1) {
+        m = 2;
+      } else m = 1;
+      updateMLCD(m, 'L');
+    }
+    if (analogRead(UP) > 500) {
+      updateMLCD(m, 'R');
+      while (analogRead(UP) > 500) {
+        moveOne(m, 'R');
+      }
+    } else if (analogRead(DOWN) > 500) {
+      updateMLCD(m, 'L');
+      while (analogRead(DOWN) > 500) {
+        moveOne(m, 'L');
+      }
+    }
+  }
+}
+void moveOne(int m, char LR) {
+  if (LR == 'L') {
+    digitalWrite(DIR1_PIN, HIGH);
+    digitalWrite(DIR2_PIN, HIGH);
+  }
+  if (LR == 'R') {
+    digitalWrite(DIR1_PIN, LOW);
+    digitalWrite(DIR2_PIN, LOW);
+  }
+  if (m == 1) {
+    digitalWrite(PUL1_PIN, HIGH);
+    delayMicroseconds(curSpeed);
+    digitalWrite(PUL1_PIN, LOW);
+    delayMicroseconds(curSpeed);
+  }
+  if (m == 2) {
+    digitalWrite(PUL2_PIN, HIGH);
+    delayMicroseconds(16*curSpeed);
+    digitalWrite(PUL2_PIN, LOW);
+    delayMicroseconds(16*curSpeed);
+  }
+
+}
+void updateMLCD(int M, char LR) {
+  char m1L_ = ' ';
+  char m2L_ = ' ';
+  char m1R_ = ' ';
+  char m2R_ = ' ';
+  if (M == 1) {
+    if (LR == 'L') {
+      m1L_ = '<';
+    } else m1R_ = '>';
+  }
+  if (M == 2) {
+    if (LR == 'L') {
+      m2L_ = '<';
+    } else m2R_ = '>';
+  }
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print('<');
+  lcd.print(m1L_);
+  lcd.setCursor(7, 0);
+  lcd.print("M1");
+  lcd.setCursor(14, 0);
+  lcd.print(m1R_);
+  lcd.print('>');
+
+  lcd.setCursor(0, 1);
+  lcd.print('<');
+  lcd.print(m2L_);
+  lcd.setCursor(7, 1);
+  lcd.print("M2");
+  lcd.setCursor(14, 1);
+  lcd.print(m2R_);
+  lcd.print('>');
 }
