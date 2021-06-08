@@ -1,8 +1,8 @@
 #include <Wire.h>
 #include <LiquidCrystal_I2C.h>
 
-LiquidCrystal_I2C lcd(0x27, 16, 2); // or 0x3F
-//LiquidCrystal_I2C lcd(0x27, 20, 4);
+//LiquidCrystal_I2C lcd(0x27, 16, 2); // or 0x3F
+LiquidCrystal_I2C lcd(0x27, 20, 4);
 
 #define R_IR 2
 #define G_IR 3
@@ -53,27 +53,29 @@ void setup()
   // Ghi gioi thieu va huong dan, delay 5 giay cho nguoi dung xem
   lcd.init();
   lcd.backlight();
-  lcd.setCursor(0, 0); 
+  lcd.setCursor(0, 0);
   lcd.print("** Hero Live **");
   lcd.setCursor(0, 1);
   lcd.print("Phan loai san pham");
-  delay(5000);
-  
+  delay(1000);
+
   lcd.clear();
+  delay(1000);
   checkDataChange();
+  delay(2000);
 }
 
 void loop()
 {
-  //  getColor();
-  if (Serial.available() > 0) {
-    // read the incoming byte:
-    color = Serial.read();
-    // say what you got:
-    Serial.print("I received: ");
-    Serial.println(color);
-    checkDataChange();
-  }
+    getColor();
+//  if (Serial.available() > 0) {
+//    // read the incoming byte:
+//    color = Serial.read();
+//    // say what you got:
+//    Serial.print("I received: ");
+//    Serial.println(color);
+//    checkDataChange();
+//  }
   Serial.print(R_cnt);
   Serial.print(" ");
   Serial.print(G_cnt);
@@ -90,10 +92,9 @@ void loop()
       delay(400);
       digitalWrite(R_Xilanh, LOW);
       R_cnt++;
-    }    
-//    checkDataChange();
-    color='N';
-    checkDataChange();
+      color = 'N';
+      checkDataChange();
+    }
   }
   if (digitalRead(G_IR) == 0) {
     while (digitalRead(G_IR) == 0) {
@@ -104,12 +105,14 @@ void loop()
       delay(400);
       digitalWrite(G_Xilanh, LOW);
       G_cnt++;
+      color = 'N';
+      checkDataChange();
     } else if (color == 'B') {
       B_cnt++;
-    }    
-//    checkDataChange();
-    color='N';
-    checkDataChange();
+      color = 'N';
+      checkDataChange();
+    }
+
   }
 
 }
@@ -194,27 +197,27 @@ void checkDataChange() {
 
 }
 void updateLCD() {
-//  lcd.setCursor(0, 0);
-//  lcd.print("*Phan loai san pham*");
-//  lcd.setCursor(0, 1);
-//  lcd.print(" ");
-  
   lcd.setCursor(0, 0);
+  lcd.print("*Phan loai san pham*");
+  lcd.setCursor(0, 1);
+  lcd.print("***");
+
+  lcd.setCursor(0, 2);
   lcd.print("Red ");
-  lcd.setCursor(8 - numDigit(R_cnt), 0);
+  lcd.setCursor(10 - numDigit(R_cnt), 2);
   lcd.print(R_cnt);
 
-  lcd.setCursor(14, 0);
+  lcd.setCursor(18, 2);
   lcd.print(colors);
 
-  lcd.setCursor(0, 1);
+  lcd.setCursor(0, 3);
   lcd.print("Green ");
-  lcd.setCursor(8 - numDigit(G_cnt), 1);
+  lcd.setCursor(10 - numDigit(G_cnt), 3);
   lcd.print(G_cnt);
 
-  lcd.setCursor(9, 1);
+  lcd.setCursor(11, 3);
   lcd.print("Blue ");
-  lcd.setCursor(16 - numDigit(B_cnt), 1);
+  lcd.setCursor(20 - numDigit(B_cnt), 3);
   lcd.print(B_cnt);
 }
 
