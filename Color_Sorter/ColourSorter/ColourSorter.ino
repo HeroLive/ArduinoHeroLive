@@ -16,6 +16,14 @@ LiquidCrystal_I2C lcd(0x27, 20, 4);
 #define S3 7
 #define sensorOut 8
 
+#define STATE_STARTUP 0
+#define STATE_GETCOLOR 1
+#define STATE_CHECKIR 2
+#define STATE_RELAY 3
+#define STATE_COUNTER 4
+
+byte currentState = STATE_STARTUP;
+
 // Stores the red. green and blue colors
 int redColor = 0;
 int greenColor = 0;
@@ -26,6 +34,8 @@ int R_cnt = 0;
 int G_cnt = 0;
 int B_cnt = 0;
 
+long t = 0;
+
 void setup()
 {
   Serial.begin(9600);
@@ -33,8 +43,8 @@ void setup()
   pinMode(G_IR, INPUT);
   pinMode(R_Xilanh, OUTPUT);
   pinMode(G_Xilanh, OUTPUT);
-  digitalWrite(R_Xilanh, LOW);
-  digitalWrite(G_Xilanh, LOW);
+  digitalWrite(R_Xilanh, HIGH);  //note relay HIGH/LOW
+  digitalWrite(G_Xilanh, HIGH);  //note relay HIGH/LOW
   delay(100);
 
   // Setting the outputs
@@ -54,7 +64,7 @@ void setup()
   lcd.init();
   lcd.backlight();
   lcd.setCursor(0, 0);
-  lcd.print("** ******** **");
+  lcd.print("** Hero Live **");
   lcd.setCursor(0, 1);
   lcd.print("Phan loai san pham");
   delay(1000);
@@ -65,53 +75,43 @@ void setup()
   delay(2000);
 }
 
-void loop()
-{
-    getColor();
-//  if (Serial.available() > 0) {
-//    // read the incoming byte:
-//    color = Serial.read();
-//    // say what you got:
-//    Serial.print("I received: ");
-//    Serial.println(color);
-//    checkDataChange();
-//  }
-  Serial.print(R_cnt);
-  Serial.print(" ");
-  Serial.print(G_cnt);
-  Serial.print(" ");
-  Serial.print(B_cnt);
-  Serial.print(" ");
-  Serial.println(colors);
-  if (digitalRead(R_IR) == 0) {
-    while (digitalRead(R_IR) == 0) {
-      Serial.println("Red_IR");
-    }
-    if (color == 'R') {
-      digitalWrite(R_Xilanh, HIGH);
-      delay(400);
-      digitalWrite(R_Xilanh, LOW);
-      R_cnt++;
-//      color = 'N';
-//      checkDataChange();
-    }
-  }
-  if (digitalRead(G_IR) == 0) {
-    while (digitalRead(G_IR) == 0) {
-      Serial.println("Green_IR");
-    }
-    if (color == 'G') {
-      digitalWrite(G_Xilanh, HIGH);
-      delay(400);
-      digitalWrite(G_Xilanh, LOW);
-      G_cnt++;
-//      color = 'N';
-//      checkDataChange();
-    } else if (color == 'B') {
-      B_cnt++;
-//      color = 'N';
-//      checkDataChange();
-    }
+void loop() {
+  updateState(currentState);
+  //  updateLCD();
+}
+void updateState(byte aState) {
+  // do state change
+  switch (aState)
+  {
+    case STATE_STARTUP:
+      Serial.println("STATE_STARTUP");
+      currentState = STATE_GETCOLOR;
+      break;
+    case STATE_GETCOLOR:
+      Serial.println("STATE_GETCOLOR");
+      getColor();
+      //      testbySerial();      
+      break;
+    case STATE_CHECKIR:
+//      Serial.println("STATE_CHECKIR");
+      checkIR();
+      if(millis()-t>5000){
+        color = 'N';
+        currentState = STATE_GETCOLOR;
+        checkDataChange();
+      }
+      break;
+    case STATE_RELAY:
+      Serial.println("STATE_RELAY");
+      xilanh();
+      break;
+    case STATE_COUNTER:
+      Serial.println("STATE_COUNTER");
+      color = 'N';
+      currentState = STATE_GETCOLOR;
+      checkDataChange();
+      break;
+
   }
 }
 
@@ -158,6 +158,7 @@ void getColor() {
   // Checks the current detected color and prints
   // a message in the serial monitor
   /******/
+  color = 'N';
   if (redColor > 300 && greenColor > 300 && blueColor > 300) {
     Serial.println("Bang tai");
   } else {
@@ -173,9 +174,83 @@ void getColor() {
       Serial.println(" - BLUE detected!");
       color = 'B';
     }
-    checkDataChange();
+    if (color != 'N') {
+      t = millis();
+      currentState = STATE_CHECKIR;
+      checkDataChange();
+    }
   }
 }
+
+void checkIR() {
+  if (digitalRead(R_IR) == 0) {
+    while (digitalRead(R_IR) == 0) {
+      Serial.println("Red_IR");
+    }
+    if (color == 'R') {
+      R_cnt++;
+      delay(500);
+      currentState = STATE_RELAY;
+    }
+
+  }
+  if (digitalRead(G_IR) == 0) {
+    while (digitalRead(G_IR) == 0) {
+      Serial.println("Green_IR");
+    }
+    if (color == 'G') {
+      G_cnt++;
+      delay(300);
+      currentState = STATE_RELAY;
+    } else if (color == 'B') {
+      B_cnt++;
+      color = 'N';
+      currentState = STATE_GETCOLOR;
+      checkDataChange();
+    }
+  }
+}
+
+void xilanh() {
+  if (color == 'R') {
+    digitalWrite(R_Xilanh, LOW); //note relay HIGH/LOW
+    delay(400);
+    digitalWrite(R_Xilanh, HIGH); //note relay HIGH/LOW
+  }
+  if (color == 'G') {
+    digitalWrite(G_Xilanh, LOW); //note relay HIGH/LOW
+    delay(400);
+    digitalWrite(G_Xilanh, HIGH); //note relay HIGH/LOW
+  }
+  delay(1000);
+  currentState = STATE_COUNTER;
+}
+
+void updateLCD() {
+  //  lcd.setCursor(0, 0);
+  //  lcd.print("*Phan loai san pham*");
+  //  lcd.setCursor(0, 1);
+  //  lcd.print("***");
+
+  lcd.setCursor(0, 0);
+  lcd.print("Red ");
+  lcd.setCursor(8 - numDigit(R_cnt), 0);
+  lcd.print(R_cnt);
+
+  lcd.setCursor(14, 0);
+  lcd.print(colors);
+
+  lcd.setCursor(0, 1);
+  lcd.print("Green ");
+  lcd.setCursor(8 - numDigit(G_cnt), 1);
+  lcd.print(G_cnt);
+
+  lcd.setCursor(9, 1);
+  lcd.print("Blue ");
+  lcd.setCursor(16 - numDigit(B_cnt), 1);
+  lcd.print(B_cnt);
+}
+
 void checkDataChange() {
   switch (color) {
     case 'R':
@@ -194,31 +269,6 @@ void checkDataChange() {
   updateLCD();
 
 }
-void updateLCD() {
-  lcd.setCursor(0, 0);
-  lcd.print("*Phan loai san pham*");
-  lcd.setCursor(0, 1);
-  lcd.print("***");
-
-  lcd.setCursor(0, 2);
-  lcd.print("Red ");
-  lcd.setCursor(10 - numDigit(R_cnt), 2);
-  lcd.print(R_cnt);
-
-  lcd.setCursor(18, 2);
-  lcd.print(colors);
-
-  lcd.setCursor(0, 3);
-  lcd.print("Green ");
-  lcd.setCursor(10 - numDigit(G_cnt), 3);
-  lcd.print(G_cnt);
-
-  lcd.setCursor(11, 3);
-  lcd.print("Blue ");
-  lcd.setCursor(20 - numDigit(B_cnt), 3);
-  lcd.print(B_cnt);
-}
-
 int numDigit(int n) {
   int count = 0;
   if (n <= 0) {
@@ -232,4 +282,18 @@ int numDigit(int n) {
     n = n / 10;
   }
   return count;
+}
+
+void testbySerial() {
+  if (Serial.available() > 0) {
+    // read the incoming byte:
+    color = Serial.read();
+    // say what you got:
+    Serial.print("I received: ");
+    Serial.println(color);
+    checkDataChange();
+    if (color != 'N') {
+      currentState = STATE_CHECKIR;
+    }
+  }
 }
