@@ -41,8 +41,8 @@ void setup()
   pinMode(G_IR, INPUT);
   pinMode(R_Xilanh, OUTPUT);
   pinMode(G_Xilanh, OUTPUT);
-  digitalWrite(R_Xilanh, HIGH);  //note relay HIGH/LOW
-  digitalWrite(G_Xilanh, HIGH);  //note relay HIGH/LOW
+  digitalWrite(R_Xilanh, LOW);  //note relay HIGH/LOW
+  digitalWrite(G_Xilanh, LOW);  //note relay HIGH/LOW
   delay(100);
 
   // Setting the outputs
@@ -87,11 +87,11 @@ void updateState(byte aState) {
       break;
     case STATE_GETCOLOR:
       Serial.println("STATE_GETCOLOR");
-      getColor();
-      //      testbySerial();
+      //      getColor();
+      testbySerial();
       break;
     case STATE_CHECKIR:
-//      Serial.println("STATE_CHECKIR");
+      Serial.println("STATE_CHECKIR");
       checkIR();
       break;
     case STATE_RELAY:
@@ -151,7 +151,6 @@ void getColor() {
   // Checks the current detected color and prints
   // a message in the serial monitor
   /******/
-  color = 'N';
   if (redColor > 300 && greenColor > 300 && blueColor > 300) {
     Serial.println("Bang tai");
   } else {
@@ -167,10 +166,7 @@ void getColor() {
       Serial.println(" - BLUE detected!");
       color = 'B';
     }
-    if (color != 'N') {
-      currentState = STATE_CHECKIR;
-      checkDataChange();
-    }
+    currentState = STATE_CHECKIR;
   }
 }
 
@@ -203,14 +199,14 @@ void checkIR() {
 
 void xilanh() {
   if (color == 'R') {
-    digitalWrite(R_Xilanh, LOW); //note relay HIGH/LOW
-    delay(400);
     digitalWrite(R_Xilanh, HIGH); //note relay HIGH/LOW
+    delay(400);
+    digitalWrite(R_Xilanh, LOW); //note relay HIGH/LOW
   }
   if (color == 'G') {
-    digitalWrite(G_Xilanh, LOW); //note relay HIGH/LOW
-    delay(400);
     digitalWrite(G_Xilanh, HIGH); //note relay HIGH/LOW
+    delay(400);
+    digitalWrite(G_Xilanh, LOW); //note relay HIGH/LOW
   }
   delay(1000);
   currentState = STATE_COUNTER;
@@ -282,8 +278,8 @@ void testbySerial() {
     Serial.print("I received: ");
     Serial.println(color);
     checkDataChange();
-    if (color != 'N') {
+    if(color!='N'){
       currentState = STATE_CHECKIR;
-    }
+    } 
   }
 }
