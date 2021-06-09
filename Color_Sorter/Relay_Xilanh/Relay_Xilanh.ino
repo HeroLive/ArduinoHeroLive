@@ -14,9 +14,10 @@ void loop() {
   // put your main code here, to run repeatedly:
   digitalWrite(R_Xilanh,HIGH); // 0V
   delay(2000);
-  digitalWrite(G_Xilanh,HIGH); // 0V
-  delay(2000);
   digitalWrite(R_Xilanh,LOW); // 0V
+  
+  digitalWrite(G_Xilanh,HIGH); // 0V
+  delay(2000);  
   digitalWrite(G_Xilanh,LOW); // 0V
   delay(5000);
 }

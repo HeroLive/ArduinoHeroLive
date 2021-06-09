@@ -54,7 +54,7 @@ void setup()
   lcd.init();
   lcd.backlight();
   lcd.setCursor(0, 0);
-  lcd.print("** Hero Live **");
+  lcd.print("** ******** **");
   lcd.setCursor(0, 1);
   lcd.print("Phan loai san pham");
   delay(1000);
@@ -92,8 +92,8 @@ void loop()
       delay(400);
       digitalWrite(R_Xilanh, LOW);
       R_cnt++;
-      color = 'N';
-      checkDataChange();
+//      color = 'N';
+//      checkDataChange();
     }
   }
   if (digitalRead(G_IR) == 0) {
@@ -105,16 +105,14 @@ void loop()
       delay(400);
       digitalWrite(G_Xilanh, LOW);
       G_cnt++;
-      color = 'N';
-      checkDataChange();
+//      color = 'N';
+//      checkDataChange();
     } else if (color == 'B') {
       B_cnt++;
-      color = 'N';
-      checkDataChange();
+//      color = 'N';
+//      checkDataChange();
     }
-
   }
-
 }
 
 void getColor() {
