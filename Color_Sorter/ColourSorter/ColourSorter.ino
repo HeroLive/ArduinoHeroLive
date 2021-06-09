@@ -25,25 +25,16 @@ LiquidCrystal_I2C lcd(0x27, 20, 4);
 byte currentState = STATE_STARTUP;
 
 // Stores the red. green and blue colors
-int redFrequency = 0;
-int greenFrequency = 0;
-int blueFrequency = 0;
 int redColor = 0;
 int greenColor = 0;
 int blueColor = 0;
-
-int R_min = 126;
-int R_max = 135;
-int G_min = 196;
-int G_max = 203;
-int B_min = 113;
-int B_max = 122;
-
 char color = 'N';
 String colors = "**";
 int R_cnt = 0;
 int G_cnt = 0;
 int B_cnt = 0;
+
+long t = 0;
 
 void setup()
 {
@@ -99,11 +90,16 @@ void updateState(byte aState) {
     case STATE_GETCOLOR:
       Serial.println("STATE_GETCOLOR");
       getColor();
-      //      testbySerial();
+      //      testbySerial();      
       break;
     case STATE_CHECKIR:
-      //      Serial.println("STATE_CHECKIR");
+//      Serial.println("STATE_CHECKIR");
       checkIR();
+      if(millis()-t>5000){
+        color = 'N';
+        currentState = STATE_GETCOLOR;
+        checkDataChange();
+      }
       break;
     case STATE_RELAY:
       Serial.println("STATE_RELAY");
@@ -125,8 +121,7 @@ void getColor() {
   digitalWrite(S3, LOW);
 
   // Reading the output frequency
-  redFrequency = pulseIn(sensorOut, LOW);
-  redColor = map(redFrequency, R_min, R_max,  255, 0);
+  redColor = pulseIn(sensorOut, LOW);
   // Printing the RED (R) value
   //  Serial.print("R = ");
   //  Serial.print(redColor);
@@ -137,8 +132,7 @@ void getColor() {
   digitalWrite(S3, HIGH);
 
   // Reading the output frequency
-  greenFrequency = pulseIn(sensorOut, LOW);
-  greenColor = map(greenFrequency, G_min, G_max, 255, 0);
+  greenColor = pulseIn(sensorOut, LOW);
   // Printing the GREEN (G) value
   //  Serial.print(" G = ");
   //  Serial.print(greenColor);
@@ -148,10 +142,7 @@ void getColor() {
   digitalWrite(S2, LOW);
   digitalWrite(S3, HIGH);
   // Reading the output frequency
-  blueFrequency = pulseIn(sensorOut, LOW);
-  blueColor = map(blueFrequency, B_min, B_max,  255, 0);
-
-
+  blueColor = pulseIn(sensorOut, LOW);
 
   // Printing the BLUE (B) value
   //  Serial.print(" B = ");
@@ -168,7 +159,7 @@ void getColor() {
   // a message in the serial monitor
   /******/
   color = 'N';
-  if (redColor > 7000 && greenColor > 7000 && blueColor > 7000) {
+  if (redColor > 300 && greenColor > 300 && blueColor > 300) {
     Serial.println("Bang tai");
   } else {
     if (redColor < greenColor && redColor < blueColor) {
@@ -184,6 +175,7 @@ void getColor() {
       color = 'B';
     }
     if (color != 'N') {
+      t = millis();
       currentState = STATE_CHECKIR;
       checkDataChange();
     }
@@ -197,6 +189,7 @@ void checkIR() {
     }
     if (color == 'R') {
       R_cnt++;
+      delay(500);
       currentState = STATE_RELAY;
     }
 
@@ -207,6 +200,7 @@ void checkIR() {
     }
     if (color == 'G') {
       G_cnt++;
+      delay(300);
       currentState = STATE_RELAY;
     } else if (color == 'B') {
       B_cnt++;
