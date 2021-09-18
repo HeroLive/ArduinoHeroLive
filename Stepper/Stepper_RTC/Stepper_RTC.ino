@@ -23,7 +23,7 @@
 ThreeWire myWire(9, 10, 8); // IO, SCLK, CE
 RtcDS1302<ThreeWire> Rtc(myWire);
 
-int _dayOfWeek = 6, _hour = 17, _min = 28, _sec = 0; //set time to run Motor
+int _dayOfWeek = 3, _hour = 7, _min = 0, _sec = 0; //set time to run Motor
 long t = 0;
 boolean _dir = LOW; //change direction when start
 int PUL = 5;
@@ -32,7 +32,7 @@ int EN = 7;
 
 int microStep = 16;
 float angle = 1.8;
-int targetAngle = 180;
+int targetAngle = 360;
 long nSteps = (360 / angle) * microStep * targetAngle / 360;
 long speeds = 300; //us - motor speed
 
@@ -103,9 +103,6 @@ void loop ()
     t = millis();
   }
   if (now.DayOfWeek() == _dayOfWeek && now.Hour() == _hour && now.Minute() == _min && now.Second() == _sec) {
-    digitalWrite(LED, HIGH);
-    delay(1000);
-    digitalWrite(LED, LOW);
     runMotor();
   }
 
@@ -122,7 +119,7 @@ void runMotor() {
   Serial.print("Move to ");
   Serial.println(targetAngle);
   digitalWrite(DIR, _dir);
-  for (int i = 1; i < nSteps; i++) {
+  for (int i = 1; i <= nSteps; i++) {
     digitalWrite(PUL, HIGH);
     delayMicroseconds(speeds);
     digitalWrite(PUL, LOW);
@@ -131,7 +128,7 @@ void runMotor() {
   delay(500);
   Serial.println("Move back 0");
   digitalWrite(DIR, !_dir);
-  for (int i = 1; i < nSteps; i++) {
+  for (int i = 1; i <= nSteps; i++) {
     digitalWrite(PUL, HIGH);
     delayMicroseconds(speeds);
     digitalWrite(PUL, LOW);
