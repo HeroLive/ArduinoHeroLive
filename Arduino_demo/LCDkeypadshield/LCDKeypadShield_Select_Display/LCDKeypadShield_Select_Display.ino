@@ -64,7 +64,7 @@ void loop() {
 }
 
 int read_LCD_buttons() {
-  adc_key_in = analogRead(0);
+  adc_key_in = analogRead(0); //A0
   if (adc_key_in < 60) {
     return btnRIGHT;
   }
