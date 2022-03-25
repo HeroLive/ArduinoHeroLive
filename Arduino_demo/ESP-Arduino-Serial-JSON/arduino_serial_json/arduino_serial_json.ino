@@ -1,5 +1,14 @@
 #include <SoftwareSerial.h>
+#include "DHT.h"
+#include <ArduinoJson.h>
 
+#define DHT11Pin 3
+#define DHTType DHT11
+DHT HT(DHT11Pin, DHTType);
+float humi;
+float tempC;
+float tempF;
+long count = 0;
 
 SoftwareSerial Serial_MEGA(10, 11); //RX,TX
 
@@ -10,18 +19,29 @@ const byte numChars = 100;
 char receivedChars[numChars];
 boolean newData = false;
 
+StaticJsonDocument<200> SensorDoc;
+
 void setup() {
   Serial.begin(9600);
   Serial_MEGA.begin(9600);
+  delay(1000);
   Serial_MEGA.println("Mega Connect! - SOFTWARESERIAL");
   floatval = 0;
+
+  HT.begin();
+  dht();
+  Serial.println("Arduino Mega started");
 }
 
 void loop() {
   if (millis() - timeTick > 5000) {
     timeTick = millis();
-    floatval = floatval + 5;
-    Serial_MEGA.println(floatval,0);
+    
+//    floatval = floatval + 5;
+//    Serial_MEGA.println(floatval,0);
+
+    count++;
+    dht();
   }
   recvWithEndMarker();
   if (newData == false) {
@@ -52,4 +72,16 @@ void recvWithEndMarker() {
       newData = true;
     }
   }
+}
+
+void dht() {
+  humi = HT.readHumidity();
+  tempC = HT.readTemperature();
+  tempF = HT.readTemperature(true);
+  SensorDoc["dht"]["tempC"] = round(tempC);
+  SensorDoc["dht"]["humi"] = round(humi);
+  SensorDoc["dht"]["count"] = count;
+  char msg[256];
+  serializeJson(SensorDoc, msg);
+  Serial_MEGA.println(msg);
 }
