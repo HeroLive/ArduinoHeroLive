@@ -10,7 +10,7 @@
 const byte numChars = 100;
 char receivedChars[numChars];
 
-const char *ssid =  "esp";   //Wifi SSID (Name)
+const char *ssid =  "esp-motor";   //Wifi SSID (Name)
 const char *pass =  "123456789"; //wifi password
 uint8_t ipClient;
 WebSocketsServer webSocket = WebSocketsServer(81); //websocket init with port 81
@@ -44,7 +44,7 @@ void setup() {
   delay(3000);
 }
 
-void loop() {
+void loop() {  
   webSocket.loop(); //keep this line on loop method
 }
 

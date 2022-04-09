@@ -29,6 +29,10 @@ class _HomePageState extends State<HomePage> {
   late IOWebSocketChannel channel;
   late bool connected; //boolean value to track if WebSocket is connected
   int count = 0;
+  double stepPerUnit = 200;
+  double speed = 2;
+  double pos = 0;
+
   @override
   void initState() {
     connected = false; //initially connection status is "NO" so its FALSE
@@ -84,7 +88,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   void sendcmd() async {
-    StepMotor step = StepMotor(200, 2, 10);
+    StepMotor step = StepMotor(stepPerUnit, speed, pos);
     print('Send to MCU ${step.toJson()}');
     channel.sink.add(jsonEncode(step)); //sending Command to NodeMCU
   }
@@ -93,48 +97,120 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return MaterialApp(
         home: Scaffold(
-      appBar: AppBar(
-        title: Text("Motors control"),
-        backgroundColor: Colors.orange,
-        actions: <Widget>[
-          IconButton(
-            onPressed: () {},
-            icon: Icon(Icons.refresh),
-          ),
-          IconButton(
-              onPressed: () {
-                connected ? null : channelconnect();
-              },
-              icon: Icon(
-                Icons.cast_connected,
-                color: connected ? Colors.white : Colors.white54,
-              )),
-        ],
-      ),
-      body: Container(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          children: [
-            ElevatedButton(
+            appBar: AppBar(
+              title: Text("Motors control"),
+              backgroundColor: Colors.orange,
+              actions: <Widget>[
+                IconButton(
+                  onPressed: () {},
+                  icon: Icon(Icons.refresh),
+                ),
+                IconButton(
+                    onPressed: () {
+                      connected ? null : channelconnect();
+                    },
+                    icon: Icon(
+                      Icons.cast_connected,
+                      color: connected ? Colors.white : Colors.white54,
+                    )),
+              ],
+            ),
+            floatingActionButton: FloatingActionButton.extended(
+              heroTag: 'run',
+              backgroundColor: Colors.green,
+              // foregroundColor: Colors.red,
               onPressed: () {
                 sendcmd();
               },
-              child: Icon(
-                Icons.arrow_back_ios,
-                color: Colors.white,
-                size: 40,
+              label: Text(
+                'Run',
+                style: TextStyle(fontSize: 18),
               ),
-              style: ElevatedButton.styleFrom(
-                fixedSize: Size(100, 100),
-                primary: Colors.orange,
-                onPrimary: Colors.black,
-                shadowColor: Colors.brown,
-                elevation: 5,
+              icon: Icon(
+                Icons.play_arrow,
+                size: 30,
               ),
             ),
-          ],
-        ),
-      ),
-    ));
+            body: SingleChildScrollView(
+                child: Column(children: [
+              Container(
+                height: 20,
+              ),
+              Card(
+                margin: EdgeInsets.all(5),
+                child: Row(
+                  children: [
+                    Text("Pul/unit"),
+                    Expanded(
+                        child: Slider(
+                      value: stepPerUnit,
+                      min: 0,
+                      max: 1000,
+                      divisions: 100,
+                      activeColor: Colors.orange,
+                      inactiveColor: Colors.grey,
+                      label: stepPerUnit.round().toString(),
+                      onChanged: connected
+                          ? (double value) {
+                              setState(() {
+                                stepPerUnit = value;
+                              });
+                            }
+                          : null,
+                    ))
+                  ],
+                ),
+              ),
+              Card(
+                margin: EdgeInsets.all(5),
+                child: Row(
+                  children: [
+                    Text("Speed"),
+                    Expanded(
+                        child: Slider(
+                      value: speed,
+                      min: 0,
+                      max: 10,
+                      divisions: 100,
+                      activeColor: Colors.orange,
+                      inactiveColor: Colors.grey,
+                      label: speed.toStringAsFixed(1).toString(),
+                      onChanged: connected
+                          ? (double value) {
+                              setState(() {
+                                speed = value;
+                              });
+                            }
+                          : null,
+                    ))
+                  ],
+                ),
+              ),
+              Card(
+                margin: EdgeInsets.all(5),
+                child: Row(
+                  children: [
+                    Text("Position"),
+                    Expanded(
+                        child: Slider(
+                      value: pos,
+                      min: -180,
+                      max: 180,
+                      divisions: 100,
+                      activeColor: Colors.orange,
+                      inactiveColor: Colors.grey,
+                      label: pos.toStringAsFixed(1).toString(),
+                      onChanged: connected
+                          ? (double value) {
+                              setState(() {
+                                pos = value;
+                              });
+                            }
+                          : null,
+                    ))
+                  ],
+                ),
+              )
+            ]))));
   }
 }

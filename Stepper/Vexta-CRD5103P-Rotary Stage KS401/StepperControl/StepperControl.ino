@@ -9,16 +9,16 @@ void setup()
   delay(3000);
 }
 void loop() {
-  digitalWrite(dirPin, HIGH);
-  for (int i = 1 ; i <= 5000 ; i = i + 1) {
+  digitalWrite(dirPin, LOW);
+  for (int i = 1 ; i <= 18750 ; i = i + 1) {
     digitalWrite(stepPin, HIGH);
     delayMicroseconds(delayTime);
     digitalWrite(stepPin, LOW);
     delayMicroseconds(delayTime);
   }
   delay(2000);  
-  digitalWrite(dirPin, LOW);
-  for (int i = 1 ; i <= 2500 ; i = i + 1) {
+  digitalWrite(dirPin, HIGH);
+  for (int i = 1 ; i <= 12500 ; i = i + 1) {
     digitalWrite(stepPin, HIGH);
     delayMicroseconds(delayTime);
     digitalWrite(stepPin, LOW);
