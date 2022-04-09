@@ -138,77 +138,116 @@ class _HomePageState extends State<HomePage> {
               ),
               Card(
                 margin: EdgeInsets.all(5),
-                child: Row(
-                  children: [
-                    Text("Pul/unit"),
-                    Expanded(
-                        child: Slider(
-                      value: stepPerUnit,
-                      min: 0,
-                      max: 1000,
-                      divisions: 100,
-                      activeColor: Colors.orange,
-                      inactiveColor: Colors.grey,
-                      label: stepPerUnit.round().toString(),
-                      onChanged: connected
-                          ? (double value) {
-                              setState(() {
-                                stepPerUnit = value;
-                              });
-                            }
-                          : null,
-                    ))
-                  ],
+                elevation: 5,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    children: [
+                      Text(
+                        "Pul/unit",
+                        style: TextStyle(
+                            fontSize: 14, fontWeight: FontWeight.bold),
+                      ),
+                      Expanded(
+                          child: Slider(
+                        value: stepPerUnit,
+                        min: 0,
+                        max: 1000,
+                        divisions: 100,
+                        activeColor: Colors.orange,
+                        inactiveColor: Colors.grey,
+                        label: stepPerUnit.round().toString(),
+                        onChanged: connected
+                            ? (double value) {
+                                setState(() {
+                                  stepPerUnit = value;
+                                });
+                              }
+                            : null,
+                      )),
+                      Text(
+                        stepPerUnit.round().toString(),
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold),
+                      )
+                    ],
+                  ),
                 ),
               ),
               Card(
                 margin: EdgeInsets.all(5),
-                child: Row(
-                  children: [
-                    Text("Speed"),
-                    Expanded(
-                        child: Slider(
-                      value: speed,
-                      min: 0,
-                      max: 10,
-                      divisions: 100,
-                      activeColor: Colors.orange,
-                      inactiveColor: Colors.grey,
-                      label: speed.toStringAsFixed(1).toString(),
-                      onChanged: connected
-                          ? (double value) {
-                              setState(() {
-                                speed = value;
-                              });
-                            }
-                          : null,
-                    ))
-                  ],
+                elevation: 5,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    children: [
+                      Text(
+                        "Speed",
+                        style: TextStyle(
+                            fontSize: 14, fontWeight: FontWeight.bold),
+                      ),
+                      Expanded(
+                          child: Slider(
+                        value: speed,
+                        min: 0,
+                        max: 10,
+                        divisions: 100,
+                        activeColor: Colors.orange,
+                        inactiveColor: Colors.grey,
+                        label: speed.toStringAsFixed(1).toString(),
+                        onChanged: connected
+                            ? (double value) {
+                                setState(() {
+                                  speed = value;
+                                });
+                              }
+                            : null,
+                      )),
+                      Text(
+                        speed.toStringAsFixed(1).toString(),
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold),
+                      )
+                    ],
+                  ),
                 ),
               ),
               Card(
                 margin: EdgeInsets.all(5),
-                child: Row(
-                  children: [
-                    Text("Position"),
-                    Expanded(
-                        child: Slider(
-                      value: pos,
-                      min: -180,
-                      max: 180,
-                      divisions: 100,
-                      activeColor: Colors.orange,
-                      inactiveColor: Colors.grey,
-                      label: pos.toStringAsFixed(1).toString(),
-                      onChanged: connected
-                          ? (double value) {
-                              setState(() {
-                                pos = value;
-                              });
-                            }
-                          : null,
-                    ))
-                  ],
+                elevation: 5,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    children: [
+                      Text(
+                        "Position",
+                        style: TextStyle(
+                            fontSize: 14, fontWeight: FontWeight.bold),
+                      ),
+                      Expanded(
+                          child: Slider(
+                        value: pos,
+                        min: -180,
+                        max: 180,
+                        divisions: 360,
+                        activeColor: Colors.orange,
+                        inactiveColor: Colors.grey,
+                        label: pos.round().toString(),
+                        onChanged: connected
+                            ? (double value) {
+                                setState(() {
+                                  pos = value;
+                                });
+                              }
+                            : null,
+                      )),
+                      Text(
+                        pos.round().toString(),
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold),
+                      )
+                    ],
+                  ),
                 ),
               )
             ]))));

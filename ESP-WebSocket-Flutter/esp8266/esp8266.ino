@@ -1,7 +1,7 @@
 #include <Arduino.h>
 #include <WebSocketsServer.h> //import for websocket
 #include <ArduinoJson.h> //data Json
-#include <StepperMotor.h>
+#include <StepperMotor.h> //https://github.com/HeroLive/StepperMotor
 
 #define pul D1
 #define dir D2
