@@ -3,10 +3,13 @@
 #include <ArduinoJson.h>
 #include <ESP8266WiFi.h>
 #include <ESP8266WiFiMulti.h>
-#include <WiFiManager.h>         //https://github.com/tzapu/WiFiManager
+#include <WiFiManager.h>         // v0.16.0 https://github.com/tzapu/WiFiManager
 
-#include <SocketIoClient.h> //v0.3 fix error beginSSL by replace const char* fingerprint = DEFAULT_FINGERPRINT to const uint8_t * fingerprint = NULL
-
+#include <SocketIoClient.h>
+/*v0.3 fix error beginSSL
+  - SocketIoClient.h: const char* fingerprint --> const uint8_t* fingerprint
+  - SocketIoClient.cpp:  const char* fingerprint = DEFAULT_FINGERPRINT)--> const uint8_t* fingerprint = NULL
+*/
 #include <WiFiUdp.h> //realtime
 #include <NTPClient.h> //realtime
 
@@ -54,7 +57,7 @@ void setup() {
   //and goes into a blocking loop awaiting configuration
   wifiManager.autoConnect(username, password);
   //or use this for auto generated name ESP + ChipID
-  //wifiManager.autoConnect();
+  //  wifiManager.autoConnect();
   //if you get here you have connected to the WiFi
   Serial.println("connected...yeey :)");
 
@@ -85,13 +88,12 @@ void dht() {
   humi = HT.readHumidity();
   tempC = HT.readTemperature();
   tempF = HT.readTemperature(true);
-  
+
   if (isnan(humi) || isnan(tempC) || isnan(tempF)) {
     Serial.println(F("Failed to read from DHT sensor!"));
     return;
   }
-  
-  Serial.println(humi);
+
   SensorDoc["dht"]["tempC"] = tempC;
   SensorDoc["dht"]["humi"] = humi;
   SensorDoc["dht"]["count"] = count;
