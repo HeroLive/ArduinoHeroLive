@@ -102,7 +102,7 @@ class _HomePageState extends State<HomePage> {
                                   Text(
                                     _sensorData.dht.tempC == null
                                         ? 'N/A'
-                                        : '${_sensorData.dht.tempC}°',
+                                        : '${double.parse(_sensorData.dht.tempC.toStringAsFixed(1))}°',
                                     style: TextStyle(
                                         fontSize: 40, color: Colors.white),
                                   ),
@@ -128,7 +128,7 @@ class _HomePageState extends State<HomePage> {
                                   Text(
                                     _sensorData.dht.humi == null
                                         ? 'N/A'
-                                        : '${_sensorData.dht.humi}%',
+                                        : '${double.parse(_sensorData.dht.humi.toStringAsFixed(1))}%',
                                     style: TextStyle(
                                         fontSize: 40, color: Colors.white),
                                   ),

@@ -7,8 +7,8 @@
 
 #include <SocketIoClient.h>
 /*v0.3 fix error beginSSL
-  - SocketIoClient.h: const char* fingerprint --> const uint8_t* fingerprint
-  - SocketIoClient.cpp:  const char* fingerprint = DEFAULT_FINGERPRINT)--> const uint8_t* fingerprint = NULL
+  - SocketIoClient.cpp: const char* fingerprint --> const uint8_t* fingerprint
+  - SocketIoClient.h:  const char* fingerprint = DEFAULT_FINGERPRINT)--> const uint8_t* fingerprint = NULL
 */
 #include <WiFiUdp.h> //realtime
 #include <NTPClient.h> //realtime
