@@ -20,7 +20,7 @@ SocketIoClient socketIO;
 WiFiUDP ntpUDP;
 NTPClient timeClient(ntpUDP, "vn.pool.ntp.org");
 
-char host[] = "192.168.1.7";
+char host[] = "192.168.1.4";
 int port = 3484;
 //char host[] = "dht-led.glitch.me";
 //int port = 80;

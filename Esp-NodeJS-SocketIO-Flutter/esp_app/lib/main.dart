@@ -8,7 +8,7 @@ void main() {
 }
 
 IO.Socket socket = IO.io(
-    'http://192.168.1.7:3484', //'https://dht-led.glitch.me',
+    'http://192.168.1.4:3484', //'https://dht-led.glitch.me',
     IO.OptionBuilder().setTransports(['websocket']).build());
 
 class MyApp extends StatelessWidget {
