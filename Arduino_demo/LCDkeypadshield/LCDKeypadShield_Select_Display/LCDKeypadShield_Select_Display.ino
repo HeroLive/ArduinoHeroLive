@@ -22,6 +22,7 @@ int adc_key_in = 0;
 #define btnNONE 5
 
 void setup() {
+  Serial.begin(9600);
 
   lcd.begin(16, 2);
 
@@ -37,29 +38,34 @@ void loop() {
   lcd.setCursor(10, 1);
   switch (lcd_key) {
     case btnRIGHT: {
+        Serial.println(adc_key_in);
         lcd.print(" RIGHT");
         break;
       }
     case btnLEFT: {
+        Serial.println(adc_key_in);
         lcd.print("  LEFT");
         break;
       }
     case btnUP: {
+        Serial.println(adc_key_in);
         lcd.print("    UP");
         break;
       }
     case btnDOWN: {
+        Serial.println(adc_key_in);
         lcd.print("  DOWN");
         break;
       }
     case btnSELECT: {
+        Serial.println(adc_key_in);
         lcd.print("SELECT");
         break;
       }
-//    case btnNONE: {
-//        lcd.print("  NONE");
-//        break;
-//      }
+      //    case btnNONE: {
+      //        lcd.print("  NONE");
+      //        break;
+      //      }
   }
 }
 
