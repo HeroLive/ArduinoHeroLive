@@ -4,8 +4,8 @@
 
 StepperMotor stepper(pul, dir);
 
-float disPerRound = 1.0 ;// only round: 1.0 round, vitme T8-4mm: 4.0 mm, GT2 Pulley 16 Teeth: 16x2 = 32.0 mm
-int microStep = 2; //1: full step, 2: haft step, ...
+float disPerRound = 360.0 ;// only round: 1.0 round, vitme T8-4mm: 4.0 mm, GT2 Pulley 16 Teeth: 16x2 = 32.0 mm
+int microStep = 4; //1: full step, 2: haft step, ...
 float angleStep = 1.8; //a step angle of 1.8 degrees with 200 steps per revolution
 float stepsPerUnit = (1 / disPerRound) * 360.0 * microStep / angleStep; //steps/round or steps/mm ...
 float target = 0;
