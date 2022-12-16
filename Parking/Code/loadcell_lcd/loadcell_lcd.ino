@@ -11,7 +11,7 @@ HX711 scale;
 int reading;
 int lastReading;
 //REPLACE WITH YOUR CALIBRATION FACTOR
-#define CALIBRATION_FACTOR 408.87
+#define CALIBRATION_FACTOR 408.415
 
 //Servo
 #include <Servo.h>
