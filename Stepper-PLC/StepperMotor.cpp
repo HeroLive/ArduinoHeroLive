@@ -55,6 +55,31 @@ void StepperMotor::DRVI(long p, long f) {
 
     if (p_state == false) {
       increment = p > 0 ? increment + 1 : increment - 1;
+      position = p > 0 ? position + 1 : position - 1;
+    }
+  }
+}
+void StepperMotor::DRVA(long p, long f){
+  if (f == 0 || p == position) {
+    exe_complete_flag = true;
+    pulse_output_flag = false;
+    return;
+  } else {
+    exe_complete_flag = false;
+  }
+  double interval = 1000000.0 / abs(f) * 0.5;
+  if (micros() - t_us >= interval) {
+    bool d_state = p - position < 0 ? false : true;
+    p_state = !p_state;
+    t_us = micros();
+
+    digitalWrite(pp, p_state);
+    digitalWrite(pd, d_state);
+
+    pulse_output_flag = true;
+
+    if (p_state == false) {
+      position = p - position < 0 ? position - 1 : position + 1;
     }
   }
 }

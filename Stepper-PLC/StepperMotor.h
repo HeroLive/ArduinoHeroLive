@@ -20,6 +20,7 @@ class StepperMotor {
         bool getExeCompleteFlag(); 
         void PLSV(long f);    
         void DRVI(long p, long f);
+        void DRVA(long p, long f);
 };
 
 #endif
