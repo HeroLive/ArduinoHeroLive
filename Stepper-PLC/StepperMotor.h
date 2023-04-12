@@ -6,7 +6,9 @@ class StepperMotor {
         int pp;
         int pd;
         long position = 0;
-        bool exeCompleteFlag = false;
+        long increment = 0;
+        bool exe_complete_flag = false;
+        bool pulse_output_flag = false;
         bool direction = false;
         long t_us;
         bool p_state = false;
@@ -14,7 +16,8 @@ class StepperMotor {
     public:
         StepperMotor(int p, int d);
         long getCurrentPosition();
-        bool getDirection();    
+        bool getDirection();  
+        bool getExeCompleteFlag(); 
         void PLSV(long f);    
         void DRVI(long p, long f);
 };
