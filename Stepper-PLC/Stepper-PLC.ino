@@ -2,47 +2,37 @@
 #include "StepperMotor.h"
 #define PUL1_PIN 2
 #define DIR1_PIN 5
-#define PUL2_PIN 3
-#define DIR2_PIN 6
-#define BT1_PIN 12
+#define HOME_PIN 9
+#define HOME_BUTTON_PIN 10
 StepperMotor motor_01(PUL1_PIN, DIR1_PIN);
-StepperMotor motor_02(PUL2_PIN, DIR2_PIN);
 
-
-bool M1 = false;
-long D200 = 40000; //motor 2 frequency
-long D202 = 100; //motor 2 pulse value
-long D204 = 5000; //motor 2 interval time
-long D0 = 0; //target position
-long _t =millis() ;
+bool debug = true;
+bool M0 = false;
+long D206 = 8000;  //home speed
+long D208 = 500;  //creep speed
 
 
 void setup() {
-  Serial.begin(115200);
-  pinMode(BT1_PIN,INPUT_PULLUP);
+  Serial.begin(9600);
+  pinMode(HOME_BUTTON_PIN, INPUT_PULLUP);
+  pinMode(HOME_PIN, INPUT_PULLUP);
   delay(1000);
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
-  // motor_01.PLSV(10000);
-  // if (digitalRead(13)==0){
-  //   M1 = true;
-  // }
-  if(millis() - _t >= D204){
-    _t = millis();
-    M1 = true;
-    D0 = D0 == 0? 32000 : 0;
-    Serial.print("Target: ");
-    Serial.println(D0);
+  if (digitalRead(HOME_BUTTON_PIN) == 0) {
+    M0 = true;
   }
-  if (M1){
-    motor_02.DRVA(D0, D200);
-    if(motor_02.getExeCompleteFlag()){
-      M1 = false;
-      Serial.println(motor_02.getCurrentPosition());
+  if (M0) {
+    motor_01.ZRN(D206, D208, HOME_PIN);
+    if (motor_01.getExeCompleteFlag()) {
+      M0 = false;
+      if(debug){
+        Serial.print("Come home - Position: ");
+      Serial.println(motor_01.getCurrentPosition());
+      }
+      
     }
+    // Serial.println(motor_01.getCurrentPosition());
   }
-  
-  // Serial.println(motor_02.getCurrentPosition());
 }
